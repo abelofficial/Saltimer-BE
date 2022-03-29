@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using Saltimer.Api.Data;
 using Saltimer.Api.Dto;
+using Microsoft.EntityFrameworkCore;
 
 namespace Saltimer.Api.Controllers
 {
@@ -13,14 +14,16 @@ namespace Saltimer.Api.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+        private readonly SaltimerDBContext _context;
         private static User user = new User();
         private readonly IConfiguration _configuration;
         private readonly IUserService _userService;
 
-        public AuthController(IConfiguration configuration, IUserService userService)
+        public AuthController(IConfiguration configuration, IUserService userService, SaltimerDBContext context)
         {
             _configuration = configuration;
             _userService = userService;
+            _context = context;
         }
 
         [HttpGet, Authorize]
@@ -31,21 +34,29 @@ namespace Saltimer.Api.Controllers
         }
 
         [HttpPost("register")]
-        public Task<ActionResult<User>> Register(UserDto request)
+        public async Task<ActionResult<User>> Register(SignupUserDto request)
         {
+            if (_context.User.Any(e => e.Username == request.Username)) 
+                return await Task.FromResult<ActionResult<User>>(BadRequest("User already exists."));
+
             CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
             user.Username = request.Username;
             user.Url = request.Url;
+            user.Email = request.Email;
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
 
-            return Task.FromResult<ActionResult<User>>(Ok(user));
+            _context.User.Add(user);
+            await _context.SaveChangesAsync();
+
+            return await Task.FromResult<ActionResult<User>>(Ok(user));
         }
 
         [HttpPost("login")]
-        public Task<ActionResult<string>> Login(UserDto request)
+        public Task<ActionResult<string>> Login(LoginUserDto request)
         {
+            // if (_context.User.Select(c => c.Username != request.Username).FirstOrDefault())
             if (user.Username != request.Username)
             {
                 return Task.FromResult<ActionResult<string>>(BadRequest("User not found."));
