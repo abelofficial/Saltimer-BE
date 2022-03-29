@@ -1,6 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# 
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saltimer.Api", "Saltimer.Api\Saltimer.Api.csproj", "{586D87ED-4B22-439A-9B65-B9498FE10656}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saltimer.Test", "Saltimer.Test\Saltimer.Test.csproj", "{506B283A-9212-42ED-8662-C0859619D343}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,5 +15,9 @@ Global
 		{586D87ED-4B22-439A-9B65-B9498FE10656}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{586D87ED-4B22-439A-9B65-B9498FE10656}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{586D87ED-4B22-439A-9B65-B9498FE10656}.Release|Any CPU.Build.0 = Release|Any CPU
+		{506B283A-9212-42ED-8662-C0859619D343}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{506B283A-9212-42ED-8662-C0859619D343}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{506B283A-9212-42ED-8662-C0859619D343}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{506B283A-9212-42ED-8662-C0859619D343}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
