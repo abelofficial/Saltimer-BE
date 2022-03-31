@@ -22,7 +22,10 @@ namespace Saltimer.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUser()
         {
-            return await _context.User.ToListAsync();
+            //return await _context.User.ToListAsync();
+            return await _context.Set<User>()
+                .Include(e => e.MobTimers)
+                .ToListAsync();
         }
 
         // GET: api/User/5

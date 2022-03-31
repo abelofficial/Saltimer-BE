@@ -16,5 +16,7 @@ namespace Saltimer.Api.Data
         public byte[] PasswordHash { get; set; }
         [JsonIgnore]
         public byte[] PasswordSalt { get; set; }
+        
+        public virtual List<MobTimer> MobTimers {get; set;}
     }
 }

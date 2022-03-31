@@ -1,7 +1,3 @@
-using System;
-using System.Linq;
-using System.Text.Json.Serialization;
-
 namespace Saltimer.Api.Dto
 {
     public class LoginUserDto

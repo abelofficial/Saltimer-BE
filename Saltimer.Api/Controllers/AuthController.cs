@@ -68,7 +68,7 @@ namespace Saltimer.Api.Controllers
             }
 
             string token = CreateToken(user);
-            return Task.FromResult<ActionResult<string>>(Ok(token));
+            return Task.FromResult<ActionResult<string>>(Ok(new{token = token}));
         }
 
         private string CreateToken(User modelUser)
