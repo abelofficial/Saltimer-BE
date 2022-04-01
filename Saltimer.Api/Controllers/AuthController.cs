@@ -56,13 +56,17 @@ namespace Saltimer.Api.Controllers
         [HttpPost("login")]
         public Task<ActionResult<string>> Login(LoginUserDto request)
         {
-            // if (_context.User.Select(c => c.Username != request.Username).FirstOrDefault())
-            if (user.Username != request.Username)
+            var target_user = _context.User.FirstOrDefault(c => c.Username == request.Username);
+            // if (user.Username != request.Username)
+            // {
+            //     return Task.FromResult<ActionResult<string>>(BadRequest("User not found."));
+            // }
+            if (target_user == null)
             {
                 return Task.FromResult<ActionResult<string>>(BadRequest("User not found."));
             }
 
-            if (!VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
+            if (!VerifyPasswordHash(request.Password, target_user.PasswordHash, target_user.PasswordSalt))
             {
                 return Task.FromResult<ActionResult<string>>(BadRequest("Wrong password."));
             }
