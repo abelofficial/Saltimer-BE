@@ -1,120 +1,102 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using Saltimer.Api.Data;
-using Saltimer.Api.Dto;
 using Microsoft.EntityFrameworkCore;
+using Saltimer.Api.Dto;
+using Saltimer.Api.Models;
 
 namespace Saltimer.Api.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AuthController : ControllerBase
+    public class AuthController : BaseController
     {
-        private readonly SaltimerDBContext _context;
-        private static User user = new User();
-        private readonly IConfiguration _configuration;
-        private readonly IUserService _userService;
+        public AuthController(IMapper mapper, IAuthService authService, SaltimerDBContext context)
+            : base(mapper, authService, context) { }
 
-        public AuthController(IConfiguration configuration, IUserService userService, SaltimerDBContext context)
+        [HttpGet("user")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserResponseDto))]
+        public ActionResult<UserResponseDto> GetMe()
         {
-            _configuration = configuration;
-            _userService = userService;
-            _context = context;
+            var currentUser = _authService.GetCurrentUser();
+            var response = _mapper.Map<UserResponseDto>(currentUser);
+            return Ok(response);
         }
 
-        [HttpGet, Authorize]
-        public ActionResult<string> GetMe()
+        [HttpPut("user")]
+        public async Task<IActionResult> PutUser(UpdateUserDto request)
         {
-            var userName = _userService.GetMyName();
-            return Ok(userName);
-        }
+            var currentUser = _authService.GetCurrentUser();
+            var targetUser = await _context.User.Where(u => u.Id == currentUser.Id).SingleOrDefaultAsync();
 
-        [HttpPost("register")]
-        public async Task<ActionResult<User>> Register(SignupUserDto request)
-        {
-            if (_context.User.Any(e => e.Username == request.Username)) 
-                return await Task.FromResult<ActionResult<User>>(BadRequest("User already exists."));
+            if (_context.User.Any(e => e.Id != targetUser.Id && e.Username == request.Username))
+                return BadRequest(new ErrorResponse()
+                {
+                    Status = StatusCodes.Status400BadRequest,
+                    Message = "Username is already taken."
+                });
 
-            CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
+            if (_context.User.Any(e => e.Id != targetUser.Id && e.EmailAddress == request.EmailAddress))
+                return BadRequest(new ErrorResponse()
+                {
+                    Status = StatusCodes.Status400BadRequest,
+                    Message = "Email address is already taken."
+                });
 
-            user.Username = request.Username;
-            user.Url = request.Url;
-            user.Email = request.Email;
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
+            _mapper.Map(request, targetUser);
+            _context.Entry(targetUser).State = EntityState.Modified;
 
-            _context.User.Add(user);
             await _context.SaveChangesAsync();
 
-            return await Task.FromResult<ActionResult<User>>(Ok(user));
+            return NoContent();
         }
 
-        [HttpPost("login")]
-        public Task<ActionResult<string>> Login(LoginUserDto request)
+        [HttpPost("register"), AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserResponseDto))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
+        public async Task<ActionResult> Register(RegisterDto request)
         {
-            var target_user = _context.User.FirstOrDefault(c => c.Username == request.Username);
-            // if (user.Username != request.Username)
-            // {
-            //     return Task.FromResult<ActionResult<string>>(BadRequest("User not found."));
-            // }
-            if (target_user == null)
+            if (_context.User.Any(e => e.Username == request.Username))
+                return BadRequest(new ErrorResponse()
+                {
+                    Status = StatusCodes.Status400BadRequest,
+                    Message = "Username is already taken."
+                });
+
+            if (_context.User.Any(e => e.EmailAddress == request.EmailAddress))
+                return BadRequest(new ErrorResponse()
+                {
+                    Status = StatusCodes.Status400BadRequest,
+                    Message = "Email address is already taken."
+                });
+
+            _authService.CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
+
+            var newUser = _mapper.Map<User>(request);
+            newUser.PasswordHash = passwordHash;
+            newUser.PasswordSalt = passwordSalt;
+
+            newUser = _context.User.Add(newUser).Entity;
+            await _context.SaveChangesAsync();
+
+            var response = _mapper.Map<UserResponseDto>(newUser);
+
+            return Ok(response);
+        }
+
+        [HttpPost("login"), AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LoginResponse))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult> Login(LoginDto request)
+        {
+            var targetUser = await _context.User.SingleOrDefaultAsync(c => c.Username == request.Username);
+
+            if (targetUser == null || !_authService.VerifyPasswordHash(request.Password, targetUser.PasswordHash, targetUser.PasswordSalt))
             {
-                return Task.FromResult<ActionResult<string>>(BadRequest("User not found."));
+                return Unauthorized();
             }
 
-            if (!VerifyPasswordHash(request.Password, target_user.PasswordHash, target_user.PasswordSalt))
-            {
-                return Task.FromResult<ActionResult<string>>(BadRequest("Wrong password."));
-            }
-
-            string token = CreateToken(user);
-            return Task.FromResult<ActionResult<string>>(Ok(new{token = token}));
+            string token = _authService.CreateToken(targetUser);
+            return Ok(new LoginResponse() { Token = token });
         }
 
-        private string CreateToken(User modelUser)
-        {
-            List<Claim> claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, modelUser.Username),
-                new Claim(ClaimTypes.Uri, modelUser.Url),
-                new Claim(ClaimTypes.Role, "Admin")
-            };
-
-            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
-                _configuration.GetSection("AppSettings:Token").Value));
-
-            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-
-            var token = new JwtSecurityToken(
-                claims: claims,
-                expires: DateTime.Now.AddDays(1),
-                signingCredentials: credentials);
-
-            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-
-            return jwt;
-        }
-
-        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
-        {
-            using (var hmac = new HMACSHA512())
-            {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            }
-        }
-
-        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
-        {
-            using (var hmac = new HMACSHA512(passwordSalt))
-            {
-                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                return computedHash.SequenceEqual(passwordHash);
-            }
-        }
     }
 }

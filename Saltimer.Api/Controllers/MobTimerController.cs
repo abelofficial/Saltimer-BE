@@ -1,107 +1,115 @@
 #nullable disable
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Saltimer.Api.Data;
+using Saltimer.Api.Dto;
+using Saltimer.Api.Models;
 
 namespace Saltimer.Api.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class MobTimerController : ControllerBase
+    public class MobTimerController : BaseController
     {
-        private readonly SaltimerDBContext _context;
+        public MobTimerController(IMapper mapper, IAuthService authService, SaltimerDBContext context)
+           : base(mapper, authService, context) { }
 
-        public MobTimerController(SaltimerDBContext context)
-        {
-            _context = context;
-        }
-
-        // GET: api/MobTimer
+        // GET: api/MobTimerSession
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MobTimer>>> GetMobTimer()
+        public async Task<ActionResult<IEnumerable<MobTimerResponse>>> GetMobTimerSession()
         {
-            //return await _context.MobTimer.ToListAsync();
-            return await _context.Set<MobTimer>()
-                .Include(e => e.UserMobSessions)
+            var currentUser = _authService.GetCurrentUser();
+
+            return await _context.MobTimerSession
+                .Where(m => m.Owner.Username.Equals(currentUser.Username) ||
+                            m.Members.Any(s => s.User.Username.Equals(currentUser.Username)))
+                .Include(e => e.Members)
+                .Select(m => _mapper.Map<MobTimerResponse>(m))
                 .ToListAsync();
-
         }
 
-        // GET: api/MobTimer/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<MobTimer>> GetMobTimer(int id)
+        public async Task<ActionResult<MobTimerResponse>> GetMobTimerSession(int id)
         {
-            var mobTimer = await _context.MobTimer.FindAsync(id);
+            var currentUser = _authService.GetCurrentUser();
 
-            if (mobTimer == null)
+            var mobTimerSession = await _context.MobTimerSession.Where(m => m.Owner.Username.Equals(currentUser.Username) ||
+                            m.Members.Any(s => s.User.Username.Equals(currentUser.Username)))
+                .Include(e => e.Members)
+                .Where(m => m.Id == id)
+                .Select(m => _mapper.Map<MobTimerResponse>(m)).SingleOrDefaultAsync();
+
+            if (mobTimerSession == null)
             {
                 return NotFound();
             }
 
-            return mobTimer;
+            return mobTimerSession;
         }
 
-        // PUT: api/MobTimer/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutMobTimer(int id, MobTimer mobTimer)
+        [HttpGet("{id}/vip/{uuid}")]
+        public async Task<ActionResult<MobTimerResponse>> GetMobTimerSessionByUUID(int id, Guid uuid)
         {
-            if (id != mobTimer.Id)
-            {
-                return BadRequest();
-            }
+            var mobTimerSession = await _context.MobTimerSession
+                .Where(m => m.UniqueId.Equals(uuid.ToString()))
+                .Include(e => e.Members)
+                .Where(m => m.Id == id)
+                .Select(m => _mapper.Map<MobTimerResponse>(m)).SingleOrDefaultAsync();
 
-            _context.Entry(mobTimer).State = EntityState.Modified;
-
-            try
+            if (mobTimerSession == null)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!MobTimerExists(id))
+                return NotFound(new ErrorResponse()
                 {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                    Message = $"Mobtimer session {uuid} with Id {id} not found.",
+                    Status = StatusCodes.Status404NotFound
+                });
             }
 
-            return NoContent();
+            return mobTimerSession;
         }
 
-        // POST: api/MobTimer
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<MobTimer>> PostMobTimer(MobTimer mobTimer)
+        public async Task<ActionResult<MobTimerResponse>> PostMobTimerSession(CreateMobTimerDto request)
         {
-            _context.MobTimer.Add(mobTimer);
-            await _context.SaveChangesAsync();
+            var currentUser = _authService.GetCurrentUser();
+            var newMobTimer = _mapper.Map<MobTimerSession>(request);
+            newMobTimer.Owner = currentUser;
+            newMobTimer = _context.MobTimerSession.Add(newMobTimer).Entity;
+            _context.SessionMember.Add(new SessionMember()
+            {
+                User = currentUser,
+                Session = newMobTimer
+            });
 
-            return CreatedAtAction("GetMobTimer", new { id = mobTimer.Id }, mobTimer);
+            await _context.SaveChangesAsync();
+            var response = _mapper.Map<MobTimerResponse>(newMobTimer);
+
+            return CreatedAtAction("GetMobTimerSession", new { id = response.Id }, response);
         }
 
-        // DELETE: api/MobTimer/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteMobTimer(int id)
+        public async Task<IActionResult> DeleteMobTimerSession(int id)
         {
-            var mobTimer = await _context.MobTimer.FindAsync(id);
-            if (mobTimer == null)
+            var currentUser = _authService.GetCurrentUser();
+            var mobTimerSession = await _context.MobTimerSession
+                .Include(ms => ms.Members)
+                .Where(ms => ms.Owner.Id == currentUser.Id)
+                .Where(ms => ms.Id == id)
+                .SingleOrDefaultAsync();
+
+            if (mobTimerSession == null)
             {
                 return NotFound();
             }
 
-            _context.MobTimer.Remove(mobTimer);
+            _context.RemoveRange(mobTimerSession);
+            _context.RemoveRange(mobTimerSession.Members);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool MobTimerExists(int id)
+        private bool mobTimerSessionExists(int id)
         {
-            return _context.MobTimer.Any(e => e.Id == id);
+            return _context.MobTimerSession.Any(e => e.Id == id);
         }
     }
 }
