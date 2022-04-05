@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Saltimer.Api.Dto;
 using Saltimer.Api.Hubs;
 using Saltimer.Api.Middleware;
+using Saltimer.Api.Models;
 using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -57,7 +57,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = false
         };
     });
-builder.Services.AddSingleton<IDictionary<string, MobtimerConnection>>(opts => new Dictionary<string, MobtimerConnection>());
+
+builder.Services.AddSingleton<IDictionary<string, string>>(
+    opts => new Dictionary<string, string>());
+builder.Services.AddSingleton<IDictionary<string, SessionHub>>(
+    opts => new Dictionary<string, SessionHub>());
+
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
