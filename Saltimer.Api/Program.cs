@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Saltimer.Api.Dto;
+using Saltimer.Api.Hubs;
 using Saltimer.Api.Middleware;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -13,8 +15,20 @@ builder.Services.AddDbContext<SaltimerDBContext>(options =>
 
     options.UseSqlServer(builder.Configuration.GetConnectionString("SaltimerDBContext")));
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+        {
+            builder.WithOrigins("http://localhost:3000")
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials();
+        });
+});
+
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddControllers();
+builder.Services.AddSignalR();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -43,7 +57,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = false
         };
     });
-
+builder.Services.AddSingleton<IDictionary<string, MobtimerConnection>>(opts => new Dictionary<string, MobtimerConnection>());
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -51,7 +65,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000"));
+
+app.UseRouting();
+
+app.UseCors();
 
 app.UseHttpsRedirection();
 
@@ -62,5 +79,7 @@ app.UseAuthorization();
 app.UseMiddleware<AuthUserMiddleware>();
 
 app.MapControllers();
+app.MapHub<MobTimerHub>("/timer");
+
 
 app.Run();
