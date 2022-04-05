@@ -32,19 +32,18 @@ namespace Saltimer.Api.Controllers
         }
 
         // GET: api/SessionMember
-        [HttpGet("{mobTimerId}/vip/{uuid}")]
-        public async Task<ActionResult<IEnumerable<UserResponseDto>>> GetSessionMemberByUUID(int mobTimerId, Guid uuid)
+        [HttpGet("vip/{uuid}")]
+        public async Task<ActionResult<IEnumerable<UserResponseDto>>> GetSessionMemberByUUID(Guid uuid)
         {
             var currentUser = _authService.GetCurrentUser();
             var targetMobTimer = await _context.SessionMember
                     .Where(sm => sm.Session.UniqueId.Equals(uuid.ToString()))
-                    .Where(sm => sm.Session.Id == mobTimerId)
                     .Select(sm => sm.Session)
                     .FirstOrDefaultAsync();
 
             if (targetMobTimer == null) return NotFound(new ErrorResponse()
             {
-                Message = $"Mobtimer session {uuid} with Id {mobTimerId} not found.",
+                Message = $"Mobtimer session {uuid} not found.",
                 Status = StatusCodes.Status404NotFound
             });
 
@@ -108,27 +107,26 @@ namespace Saltimer.Api.Controllers
             return CreatedAtAction(nameof(PostSessionMember), response);
         }
 
-        [HttpPost("{mobTimerId}/vip")]
+        [HttpPost("vip")]
         [ActionName(nameof(PostSessionMember))]
-        public async Task<ActionResult<SessionMemberResponse>> PostSessionMemberByUUID(int mobTimerId, VipSessionMemberRequest request)
+        public async Task<ActionResult<SessionMemberResponse>> PostSessionMemberByUUID(VipSessionMemberRequest request)
         {
             var currentUser = _authService.GetCurrentUser();
 
             var targetMobTimer = await _context.SessionMember
                     .Include(sm => sm.Session.Members)
                     .Where(sm => sm.Session.UniqueId.Equals(request.Uuid.ToString()))
-                    .Where(sm => sm.Session.Id == mobTimerId)
                     .Select(sm => sm.Session)
                     .FirstOrDefaultAsync();
 
             if (targetMobTimer == null) return NotFound(new ErrorResponse()
             {
-                Message = $"Mobtimer session {request.Uuid} with Id {mobTimerId} not found.",
+                Message = $"Mobtimer session {request.Uuid} not found.",
                 Status = StatusCodes.Status404NotFound
             });
 
             var userAlreadyMember = _context.SessionMember
-                    .Any(sm => sm.Session.Id == mobTimerId && sm.User.Id == currentUser.Id);
+                    .Any(sm => request.Uuid.ToString().Equals(sm.Session.UniqueId) && sm.User.Id == currentUser.Id);
 
             if (userAlreadyMember) return BadRequest(new ErrorResponse()
             {
