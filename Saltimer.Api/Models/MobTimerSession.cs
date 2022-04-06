@@ -10,9 +10,7 @@ public class MobTimerSession
     public string UniqueId { get; set; } = Guid.NewGuid().ToString();
 
     public string DisplayName { get; set; }
-
     public int RoundTime { get; set; }
-
     public int BreakTime { get; set; }
 
     public virtual User Owner { get; set; }

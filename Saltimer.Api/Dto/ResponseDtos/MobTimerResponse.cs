@@ -6,13 +6,9 @@ namespace Saltimer.Api.Dto
     public class MobTimerResponse
     {
         public int Id { get; set; }
-
         public string UniqueId { get; set; }
-
         public string DisplayName { get; set; }
-
         public int RoundTime { get; set; }
-
         public int BreakTime { get; set; }
 
     }
