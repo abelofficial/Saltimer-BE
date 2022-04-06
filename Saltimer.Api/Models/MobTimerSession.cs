@@ -13,11 +13,7 @@ public class MobTimerSession
 
     public int RoundTime { get; set; }
 
-    public DateTime StartTime { get; set; }
-
     public int BreakTime { get; set; }
-
-    public DateTime PausedTime { get; set; }
 
     public virtual User Owner { get; set; }
 

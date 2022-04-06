@@ -13,11 +13,7 @@ namespace Saltimer.Api.Dto
 
         public int RoundTime { get; set; }
 
-        public DateTime StartTime { get; set; }
-
         public int BreakTime { get; set; }
-
-        public DateTime PausedTime { get; set; }
 
     }
 
