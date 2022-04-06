@@ -15,10 +15,6 @@ namespace Saltimer.Api.Dto
 
         public DateTime StartTime { get; set; }
 
-        public int BreakTime { get; set; }
-
-        public DateTime PausedTime { get; set; }
-
     }
 
     public class MobTimerSessionToMobTimerResponseProfile : Profile

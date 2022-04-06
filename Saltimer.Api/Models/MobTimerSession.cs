@@ -15,10 +15,6 @@ public class MobTimerSession
 
     public DateTime StartTime { get; set; }
 
-    public int BreakTime { get; set; }
-
-    public DateTime PausedTime { get; set; }
-
     public virtual User Owner { get; set; }
 
     public virtual List<SessionMember> Members { get; set; }

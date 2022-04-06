@@ -18,14 +18,6 @@ namespace Saltimer.Api.Dto
         [Required]
         [TimestampAttribute]
         public DateTime StartTime { get; set; }
-
-        [Required]
-        [Range(5, 30)]
-        public int BreakTime { get; set; }
-
-        [Required]
-        [TimestampAttribute]
-        public DateTime PausedTime { get; set; }
     }
 
     public class CreateMobTimerDtoToMobTimerSessionProfile : Profile
