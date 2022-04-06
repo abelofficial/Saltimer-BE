@@ -58,8 +58,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddSingleton<IDictionary<string, string>>(
-    opts => new Dictionary<string, string>());
+builder.Services.AddSingleton<IDictionary<string, SessionHubUsers>>(
+    opts => new Dictionary<string, SessionHubUsers>());
 builder.Services.AddSingleton<IDictionary<string, SessionHub>>(
     opts => new Dictionary<string, SessionHub>());
 

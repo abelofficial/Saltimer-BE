@@ -9,12 +9,12 @@ namespace Saltimer.Api.Hubs;
 
 public class MobTimerHub : Hub
 {
-    private readonly IDictionary<string, string> _sessionUsers;
+    private readonly IDictionary<string, SessionHubUsers> _sessionUsers;
     private IDictionary<string, SessionHub> _sessionHubs;
     protected readonly IMapper _mapper;
     protected readonly SaltimerDBContext _db;
 
-    public MobTimerHub(SaltimerDBContext db, IMapper mapper, IDictionary<string, string> sessionUsers, IDictionary<string, SessionHub> sessionHubs)
+    public MobTimerHub(SaltimerDBContext db, IMapper mapper, IDictionary<string, SessionHubUsers> sessionUsers, IDictionary<string, SessionHub> sessionHubs)
     {
         _db = db;
         _mapper = mapper;
@@ -22,13 +22,39 @@ public class MobTimerHub : Hub
         _sessionUsers = sessionUsers;
     }
 
+    public override Task OnDisconnectedAsync(Exception exception)
+    {
+        if (_sessionUsers.TryGetValue(Context.ConnectionId, out SessionHubUsers userConnection))
+        {
+            _sessionUsers.Remove(Context.ConnectionId);
+
+            var t = Task.Run(async () =>
+            {
+                await Clients.Group(userConnection.ConnectionId).SendAsync("ReceiveUserLeaveSession", new
+                {
+                    Title = "Info",
+                    message = $"{userConnection.Username} has left session."
+                });
+                await SendUsersConnected(userConnection.ConnectionId);
+            });
+            t.Wait();
+        }
+
+        return base.OnDisconnectedAsync(exception);
+    }
+
+
     public async Task JoinSession(JoinSessionRequest request)
     {
         await Groups.AddToGroupAsync(Context.ConnectionId, request.Uuid.ToString());
 
         var targetUser = await _db.User.FindAsync(request.UserId);
 
-        _sessionUsers[targetUser.Username] = request.Uuid.ToString();
+        _sessionUsers[Context.ConnectionId] = new SessionHubUsers()
+        {
+            ConnectionId = request.Uuid.ToString(),
+            Username = targetUser.Username,
+        };
 
         if (!_sessionHubs.Any(sh => sh.Key.Equals(request.Uuid.ToString())))
         {
@@ -56,9 +82,7 @@ public class MobTimerHub : Hub
             .Caller
             .SendAsync("ReceiveSession", response, _sessionHubs[request.Uuid.ToString()]);
 
-        await Clients
-            .GroupExcept(request.Uuid.ToString(), Context.ConnectionId)
-            .SendAsync("NotifyNewMember", $"{targetUser.Username} has joined session.");
+        await NotifyClient(request.Uuid.ToString(), "Info", $"{targetUser.Username} has joined session.");
 
         await SendUsersConnected(request.Uuid.ToString());
     }
@@ -66,8 +90,8 @@ public class MobTimerHub : Hub
     public async Task SendUsersConnected(string groupId)
     {
         var usersNames = _sessionUsers
-               .Where(c => c.Value == groupId)
-               .Select(c => c.Key);
+               .Where(c => c.Value.ConnectionId == groupId)
+               .Select(c => c.Value.Username);
 
         var users = await _db.User.Where(u => usersNames.Contains(u.Username)).ToListAsync();
 
@@ -75,6 +99,13 @@ public class MobTimerHub : Hub
         await Clients
             .Group(groupId)
             .SendAsync("ReceiveOnlineMember", response);
+    }
+
+    public async Task NotifyClient(string excludeClient, string title, string message)
+    {
+        await Clients
+           .GroupExcept(excludeClient, Context.ConnectionId)
+           .SendAsync("NotifyClient", new { title, message });
     }
 
 }
