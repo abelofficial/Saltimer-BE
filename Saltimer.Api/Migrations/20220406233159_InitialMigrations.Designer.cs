@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Saltimer.Api.Migrations
 {
     [DbContext(typeof(SaltimerDBContext))]
-    [Migration("20220331115148_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20220406233159_InitialMigrations")]
+    partial class InitialMigrations
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,7 +23,7 @@ namespace Saltimer.Api.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("Saltimer.Api.Data.MobTimer", b =>
+            modelBuilder.Entity("Saltimer.Api.Models.MobTimerSession", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -31,40 +31,55 @@ namespace Saltimer.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime>("BreakTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("MobName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("OwnerId")
+                    b.Property<int>("BreakTime")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("PausedTime")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("DisplayName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("OwnerId")
+                        .HasColumnType("int");
 
                     b.Property<int>("RoundTime")
                         .HasColumnType("int");
 
-                    b.Property<string>("SessionUrl")
-                        .IsRequired()
+                    b.Property<string>("UniqueId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("datetime2");
+                    b.HasKey("Id");
+
+                    b.HasIndex("OwnerId");
+
+                    b.ToTable("MobTimerSession");
+                });
+
+            modelBuilder.Entity("Saltimer.Api.Models.SessionMember", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int?>("SessionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Turn")
+                        .HasColumnType("int");
 
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("SessionId");
+
                     b.HasIndex("UserId");
 
-                    b.ToTable("MobTimer");
+                    b.ToTable("SessionMember");
                 });
 
-            modelBuilder.Entity("Saltimer.Api.Data.User", b =>
+            modelBuilder.Entity("Saltimer.Api.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -75,24 +90,25 @@ namespace Saltimer.Api.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
+                    b.Property<string>("EmailAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("PasswordHash")
-                        .IsRequired()
                         .HasColumnType("varbinary(max)");
 
                     b.Property<byte[]>("PasswordSalt")
-                        .IsRequired()
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<string>("Url")
-                        .IsRequired()
+                    b.Property<string>("ProfileImage")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Username")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -100,52 +116,36 @@ namespace Saltimer.Api.Migrations
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("Saltimer.Api.Data.UserMobSession", b =>
+            modelBuilder.Entity("Saltimer.Api.Models.MobTimerSession", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("MobTimerId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Turn")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MobTimerId");
-
-                    b.ToTable("UserMobSession");
-                });
-
-            modelBuilder.Entity("Saltimer.Api.Data.MobTimer", b =>
-                {
-                    b.HasOne("Saltimer.Api.Data.User", null)
+                    b.HasOne("Saltimer.Api.Models.User", "Owner")
                         .WithMany("MobTimers")
+                        .HasForeignKey("OwnerId");
+
+                    b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("Saltimer.Api.Models.SessionMember", b =>
+                {
+                    b.HasOne("Saltimer.Api.Models.MobTimerSession", "Session")
+                        .WithMany("Members")
+                        .HasForeignKey("SessionId");
+
+                    b.HasOne("Saltimer.Api.Models.User", "User")
+                        .WithMany()
                         .HasForeignKey("UserId");
+
+                    b.Navigation("Session");
+
+                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Saltimer.Api.Data.UserMobSession", b =>
+            modelBuilder.Entity("Saltimer.Api.Models.MobTimerSession", b =>
                 {
-                    b.HasOne("Saltimer.Api.Data.MobTimer", null)
-                        .WithMany("UserMobSessions")
-                        .HasForeignKey("MobTimerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Members");
                 });
 
-            modelBuilder.Entity("Saltimer.Api.Data.MobTimer", b =>
-                {
-                    b.Navigation("UserMobSessions");
-                });
-
-            modelBuilder.Entity("Saltimer.Api.Data.User", b =>
+            modelBuilder.Entity("Saltimer.Api.Models.User", b =>
                 {
                     b.Navigation("MobTimers");
                 });

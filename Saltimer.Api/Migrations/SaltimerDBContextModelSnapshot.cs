@@ -29,6 +29,9 @@ namespace Saltimer.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int>("BreakTime")
+                        .HasColumnType("int");
+
                     b.Property<string>("DisplayName")
                         .HasColumnType("nvarchar(max)");
 

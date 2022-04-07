@@ -12,11 +12,11 @@ namespace Saltimer.Api.Dto
         public string DisplayName { get; set; }
 
         [Required]
-        [Range(5, 30)]
+        [Range(1, 30)]
         public int RoundTime { get; set; }
 
         [Required]
-        [Range(5, 30)]
+        [Range(1, 30)]
         public int BreakTime { get; set; }
     }
 

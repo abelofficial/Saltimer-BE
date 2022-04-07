@@ -28,6 +28,11 @@ public class MobTimerHub : Hub
         {
             _sessionUsers.Remove(Context.ConnectionId);
 
+            if (!_sessionUsers.Any(sh => sh.Value.ConnectionId.Equals(userConnection.ConnectionId.ToString())))
+            {
+                _sessionHubs.Remove(userConnection.ConnectionId.ToString());
+            }
+
             var t = Task.Run(async () =>
             {
                 await Clients.Group(userConnection.ConnectionId).SendAsync("ReceiveUserLeaveSession", new
@@ -85,6 +90,39 @@ public class MobTimerHub : Hub
         await NotifyClient(request.Uuid.ToString(), "Info", $"{targetUser.Username} has joined session.");
 
         await SendUsersConnected(request.Uuid.ToString());
+    }
+
+    public async Task PlayTimer(SessionUpdateRequest request)
+    {
+        _sessionHubs[request.Uuid.ToString()].IsPaused = false;
+        _sessionHubs[request.Uuid.ToString()].PausedTime = _sessionHubs[request.Uuid.ToString()].StartTime;
+        _sessionHubs[request.Uuid.ToString()].StartTime = DateTime.Now;
+
+        await Clients
+            .Group(request.Uuid.ToString())
+            .SendAsync("ReceiveSessionUpdate", _sessionHubs[request.Uuid.ToString()]);
+    }
+
+    public async Task NextDriver(SessionUpdateRequest request)
+    {
+        _sessionHubs[request.Uuid.ToString()].IsPaused = true;
+        _sessionHubs[request.Uuid.ToString()].PausedTime = null;
+        _sessionHubs[request.Uuid.ToString()].StartTime = null;
+        _sessionHubs[request.Uuid.ToString()].TotalRoundCount = _sessionHubs[request.Uuid.ToString()].TotalRoundCount + 1;
+
+        await Clients
+            .Group(request.Uuid.ToString())
+            .SendAsync("ReceiveSessionUpdate", _sessionHubs[request.Uuid.ToString()]);
+    }
+
+    public async Task PauseTimer(SessionUpdateRequest request)
+    {
+        _sessionHubs[request.Uuid.ToString()].IsPaused = true;
+        _sessionHubs[request.Uuid.ToString()].PausedTime = DateTime.Now; ;
+
+        await Clients
+            .Group(request.Uuid.ToString())
+            .SendAsync("ReceiveSessionUpdate", _sessionHubs[request.Uuid.ToString()]);
     }
 
     public async Task SendUsersConnected(string groupId)
