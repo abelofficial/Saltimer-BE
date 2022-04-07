@@ -1,5 +1,6 @@
 global using Saltimer.Api.Services;
 using System.Text;
+using Npgsql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -8,12 +9,12 @@ using Saltimer.Api.Hubs;
 using Saltimer.Api.Middleware;
 using Saltimer.Api.Models;
 using Swashbuckle.AspNetCore.Filters;
+using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<SaltimerDBContext>(options =>
-
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SaltimerDBContext")));
+        options.UseNpgsql(Environment.GetEnvironmentVariable("HerokuDB")));
 
 builder.Services.AddCors(options =>
 {
