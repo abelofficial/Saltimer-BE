@@ -66,17 +66,10 @@ namespace Saltimer.Api.Controllers
         [HttpPost("login"), AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LoginResponse))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult> Login(LoginDto request)
+        public async Task<ActionResult> Login(LoginUserCommand request)
         {
-            var targetUser = await _context.User.SingleOrDefaultAsync(c => c.Username == request.Username);
 
-            if (targetUser == null || !_authService.VerifyPasswordHash(request.Password, targetUser.PasswordHash, targetUser.PasswordSalt))
-            {
-                return Unauthorized();
-            }
-
-            string token = _authService.CreateToken(targetUser);
-            return Ok(new LoginResponse() { Token = token });
+            return Ok(await _mediator.Send(request));
         }
 
     }
