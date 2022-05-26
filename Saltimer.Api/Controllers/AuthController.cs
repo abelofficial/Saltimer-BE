@@ -18,11 +18,10 @@ namespace Saltimer.Api.Controllers
 
         [HttpGet("user")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserResponseDto))]
-        public ActionResult<UserResponseDto> GetMe()
+        public async Task<IActionResult> GetMe()
         {
-            var currentUser = _authService.GetCurrentUser();
-            var response = _mapper.Map<UserResponseDto>(currentUser);
-            return Ok(response);
+
+            return Ok(await _mediator.Send(new GetCurrentUserQuery()));
         }
 
         [HttpPut("user")]
@@ -36,7 +35,7 @@ namespace Saltimer.Api.Controllers
         [HttpPost("register"), AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserResponseDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
-        public async Task<ActionResult> Register(RegisterUserCommand request)
+        public async Task<IActionResult> Register(RegisterUserCommand request)
         {
 
             return Ok(await _mediator.Send(request));
@@ -45,7 +44,7 @@ namespace Saltimer.Api.Controllers
         [HttpPost("login"), AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LoginResponse))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult> Login(LoginUserCommand request)
+        public async Task<IActionResult> Login(LoginUserCommand request)
         {
 
             return Ok(await _mediator.Send(request));
