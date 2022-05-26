@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\School\\Salt\\FinalProject\\Backend\\Saltimer-BE\\Saltimer.Api\\Saltimer.Api.csproj": {}
+    "d:\\Development\\Backend\\DotNet\\Saltimer-BE\\Saltimer.Api\\Saltimer.Api.csproj": {}
   },
   "projects": {
-    "D:\\School\\Salt\\FinalProject\\Backend\\Saltimer-BE\\Saltimer.Api\\Saltimer.Api.csproj": {
+    "d:\\Development\\Backend\\DotNet\\Saltimer-BE\\Saltimer.Api\\Saltimer.Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\School\\Salt\\FinalProject\\Backend\\Saltimer-BE\\Saltimer.Api\\Saltimer.Api.csproj",
+        "projectUniqueName": "d:\\Development\\Backend\\DotNet\\Saltimer-BE\\Saltimer.Api\\Saltimer.Api.csproj",
         "projectName": "Saltimer.Api",
-        "projectPath": "D:\\School\\Salt\\FinalProject\\Backend\\Saltimer-BE\\Saltimer.Api\\Saltimer.Api.csproj",
+        "projectPath": "d:\\Development\\Backend\\DotNet\\Saltimer-BE\\Saltimer.Api\\Saltimer.Api.csproj",
         "packagesPath": "C:\\Users\\Abel Sintaro\\.nuget\\packages\\",
-        "outputPath": "D:\\School\\Salt\\FinalProject\\Backend\\Saltimer-BE\\Saltimer.Api\\obj\\",
+        "outputPath": "d:\\Development\\Backend\\DotNet\\Saltimer-BE\\Saltimer.Api\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Abel Sintaro\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -80,6 +80,14 @@
               "target": "Package",
               "version": "[6.0.2, )"
             },
+            "Npgsql": {
+              "target": "Package",
+              "version": "[6.0.3, )"
+            },
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[6.0.3, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.2.3, )"
@@ -111,7 +119,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.300\\RuntimeIdentifierGraph.json"
         }
       }
     }
