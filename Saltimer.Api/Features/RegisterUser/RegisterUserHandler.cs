@@ -6,18 +6,11 @@ using Saltimer.Api.Dto;
 using Saltimer.Api.Models;
 
 namespace Saltimer.Api.Commands;
-public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, UserResponseDto>
+public class RegisterUserHandler : BaseHandler, IRequestHandler<RegisterUserCommand, UserResponseDto>
 {
 
-    protected readonly SaltimerDBContext _context;
-    protected readonly IAuthService _authService;
-    protected readonly IMapper _mapper;
-    public RegisterUserHandler(IMapper mapper, IAuthService authService, SaltimerDBContext context)
-    {
-        _mapper = mapper;
-        _authService = authService;
-        _context = context;
-    }
+    public RegisterUserHandler(IMediator mediator, IMapper mapper, IAuthService authService, SaltimerDBContext context)
+            : base(mapper, authService, context) { }
     public async Task<UserResponseDto> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
         if (_context.User.Any(e => e.Username == request.Username))

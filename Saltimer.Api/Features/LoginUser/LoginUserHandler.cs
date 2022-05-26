@@ -5,18 +5,11 @@ using Microsoft.EntityFrameworkCore;
 using Saltimer.Api.Dto;
 
 namespace Saltimer.Api.Commands;
-public class LoginUserHandler : IRequestHandler<LoginUserCommand, LoginResponse>
+public class LoginUserHandler : BaseHandler, IRequestHandler<LoginUserCommand, LoginResponse>
 {
+    public LoginUserHandler(IMediator mediator, IMapper mapper, IAuthService authService, SaltimerDBContext context)
+            : base(mapper, authService, context) { }
 
-    protected readonly SaltimerDBContext _context;
-    protected readonly IAuthService _authService;
-    protected readonly IMapper _mapper;
-    public LoginUserHandler(IMapper mapper, IAuthService authService, SaltimerDBContext context)
-    {
-        _mapper = mapper;
-        _authService = authService;
-        _context = context;
-    }
     public async Task<LoginResponse> Handle(LoginUserCommand request, CancellationToken cancellationToken)
     {
         var targetUser = await _context.User.SingleOrDefaultAsync(c => c.Username == request.Username);

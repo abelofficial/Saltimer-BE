@@ -2,7 +2,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Saltimer.Api.Command;
 using Saltimer.Api.Dto;
 
@@ -27,29 +26,9 @@ namespace Saltimer.Api.Controllers
         }
 
         [HttpPut("user")]
-        public async Task<IActionResult> PutUser(UpdateUserDto request)
+        public async Task<IActionResult> PutUser(UpdateUserCommand request)
         {
-            var currentUser = _authService.GetCurrentUser();
-            var targetUser = await _context.User.Where(u => u.Id == currentUser.Id).SingleOrDefaultAsync();
-
-            if (_context.User.Any(e => e.Id != targetUser.Id && e.Username == request.Username))
-                return BadRequest(new ErrorResponse()
-                {
-                    Status = StatusCodes.Status400BadRequest,
-                    Message = "Username is already taken."
-                });
-
-            if (_context.User.Any(e => e.Id != targetUser.Id && e.EmailAddress == request.EmailAddress))
-                return BadRequest(new ErrorResponse()
-                {
-                    Status = StatusCodes.Status400BadRequest,
-                    Message = "Email address is already taken."
-                });
-
-            _mapper.Map(request, targetUser);
-            _context.Entry(targetUser).State = EntityState.Modified;
-
-            await _context.SaveChangesAsync();
+            await _mediator.Send(request);
 
             return NoContent();
         }
