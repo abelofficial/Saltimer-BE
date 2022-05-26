@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "d:\\Development\\Backend\\DotNet\\Saltimer-BE\\Saltimer.Api\\Saltimer.Api.csproj": {}
+    "D:\\Development\\Backend\\DotNet\\Saltimer-BE\\Saltimer.Api\\Saltimer.Api.csproj": {}
   },
   "projects": {
-    "d:\\Development\\Backend\\DotNet\\Saltimer-BE\\Saltimer.Api\\Saltimer.Api.csproj": {
+    "D:\\Development\\Backend\\DotNet\\Saltimer-BE\\Saltimer.Api\\Saltimer.Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "d:\\Development\\Backend\\DotNet\\Saltimer-BE\\Saltimer.Api\\Saltimer.Api.csproj",
+        "projectUniqueName": "D:\\Development\\Backend\\DotNet\\Saltimer-BE\\Saltimer.Api\\Saltimer.Api.csproj",
         "projectName": "Saltimer.Api",
-        "projectPath": "d:\\Development\\Backend\\DotNet\\Saltimer-BE\\Saltimer.Api\\Saltimer.Api.csproj",
+        "projectPath": "D:\\Development\\Backend\\DotNet\\Saltimer-BE\\Saltimer.Api\\Saltimer.Api.csproj",
         "packagesPath": "C:\\Users\\Abel Sintaro\\.nuget\\packages\\",
-        "outputPath": "d:\\Development\\Backend\\DotNet\\Saltimer-BE\\Saltimer.Api\\obj\\",
+        "outputPath": "D:\\Development\\Backend\\DotNet\\Saltimer-BE\\Saltimer.Api\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Abel Sintaro\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -47,6 +47,14 @@
             "AutoMapper.Extensions.Microsoft.DependencyInjection": {
               "target": "Package",
               "version": "[8.1.1, )"
+            },
+            "MediatR": {
+              "target": "Package",
+              "version": "[10.0.1, )"
+            },
+            "MediatR.Extensions.Microsoft.DependencyInjection": {
+              "target": "Package",
+              "version": "[10.0.1, )"
             },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
