@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Saltimer.Api.Command;
 using Saltimer.Api.Dto;
+using Saltimer.Api.Queries;
 
 namespace Saltimer.Api.Controllers
 {

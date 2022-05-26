@@ -5,7 +5,7 @@ using Saltimer.Api.Command;
 using Saltimer.Api.Dto;
 using Saltimer.Api.Models;
 
-namespace Saltimer.Api.Commands;
+namespace Saltimer.Api.Handlers;
 public class RegisterUserHandler : BaseHandler, IRequestHandler<RegisterUserCommand, UserResponseDto>
 {
 

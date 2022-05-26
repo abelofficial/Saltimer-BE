@@ -3,7 +3,7 @@ using Saltimer.Api.Dto;
 
 namespace Saltimer.Api.Queries
 {
-    public class GetCurrentUserQuery : IRequest<UserResponseDto>
+    public class GetSessionsQuery : IRequest<IEnumerable<MobTimerResponse>>
     {
 
     }

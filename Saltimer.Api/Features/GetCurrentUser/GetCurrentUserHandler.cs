@@ -1,8 +1,9 @@
 using AutoMapper;
 using MediatR;
 using Saltimer.Api.Dto;
+using Saltimer.Api.Queries;
 
-namespace Saltimer.Api.Commands;
+namespace Saltimer.Api.Handlers;
 public class GetCurrentUserHandler : BaseHandler, IRequestHandler<GetCurrentUserQuery, UserResponseDto>
 {
     public GetCurrentUserHandler(IMediator mediator, IMapper mapper, IAuthService authService, SaltimerDBContext context)

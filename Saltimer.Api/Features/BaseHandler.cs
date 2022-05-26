@@ -1,6 +1,6 @@
 using AutoMapper;
 
-namespace Saltimer.Api.Commands;
+namespace Saltimer.Api.Handlers;
 public class BaseHandler
 {
 

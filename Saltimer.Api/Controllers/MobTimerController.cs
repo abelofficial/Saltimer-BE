@@ -1,69 +1,41 @@
 #nullable disable
 using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Saltimer.Api.Dto;
 using Saltimer.Api.Models;
+using Saltimer.Api.Queries;
 
 namespace Saltimer.Api.Controllers
 {
+
     public class MobTimerController : BaseController
     {
-        public MobTimerController(IMapper mapper, IAuthService authService, SaltimerDBContext context)
-           : base(mapper, authService, context) { }
+        private IMediator _mediator;
+        public MobTimerController(IMediator mediator, IMapper mapper, IAuthService authService, SaltimerDBContext context)
+           : base(mapper, authService, context)
+        {
+            _mediator = mediator;
+        }
 
         // GET: api/MobTimerSession
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MobTimerResponse>>> GetMobTimerSession()
         {
-            var currentUser = _authService.GetCurrentUser();
-
-            return await _context.MobTimerSession
-                .Where(m => m.Owner.Username.Equals(currentUser.Username) ||
-                            m.Members.Any(s => s.User.Username.Equals(currentUser.Username)))
-                .Include(e => e.Members)
-                .Select(m => _mapper.Map<MobTimerResponse>(m))
-                .ToListAsync();
+            return Ok(await _mediator.Send(new GetSessionsQuery()));
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<MobTimerResponse>> GetMobTimerSession(int id)
         {
-            var currentUser = _authService.GetCurrentUser();
-
-            var mobTimerSession = await _context.MobTimerSession.Where(m => m.Owner.Username.Equals(currentUser.Username) ||
-                            m.Members.Any(s => s.User.Username.Equals(currentUser.Username)))
-                .Include(e => e.Members)
-                .Where(m => m.Id == id)
-                .Select(m => _mapper.Map<MobTimerResponse>(m)).SingleOrDefaultAsync();
-
-            if (mobTimerSession == null)
-            {
-                return NotFound();
-            }
-
-            return mobTimerSession;
+            return Ok(await _mediator.Send(new GetSessionByIdQuery() { Id = id }));
         }
 
-        [HttpGet("{id}/vip/{uuid}")]
-        public async Task<ActionResult<MobTimerResponse>> GetMobTimerSessionByUUID(int id, Guid uuid)
+        [HttpGet("vip/{uuid}")]
+        public async Task<ActionResult<MobTimerResponse>> GetMobTimerSessionByUUID(Guid uuid)
         {
-            var mobTimerSession = await _context.MobTimerSession
-                .Where(m => m.UniqueId.Equals(uuid.ToString()))
-                .Include(e => e.Members)
-                .Where(m => m.Id == id)
-                .Select(m => _mapper.Map<MobTimerResponse>(m)).SingleOrDefaultAsync();
-
-            if (mobTimerSession == null)
-            {
-                return NotFound(new ErrorResponse()
-                {
-                    Message = $"Mobtimer session {uuid} with Id {id} not found.",
-                    Status = StatusCodes.Status404NotFound
-                });
-            }
-
-            return mobTimerSession;
+            return Ok(await _mediator.Send(new GetSessionByUniqueIdQuery() { UniqueId = uuid }));
         }
 
         [HttpPost]
