@@ -1,10 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using AutoMapper;
+using MediatR;
 using Saltimer.Api.Models;
 
 namespace Saltimer.Api.Dto
 {
-    public class CreateMobTimerDto
+    public class CreateSessionCommand : IRequest<MobTimerResponse>
     {
         [Required]
         [MinLength(2)]
@@ -20,11 +21,11 @@ namespace Saltimer.Api.Dto
         public int BreakTime { get; set; }
     }
 
-    public class CreateMobTimerDtoToMobTimerSessionProfile : Profile
+    public class CreateSessionCommandToMobTimerSessionProfile : Profile
     {
-        public CreateMobTimerDtoToMobTimerSessionProfile()
+        public CreateSessionCommandToMobTimerSessionProfile()
         {
-            CreateMap<CreateMobTimerDto, MobTimerSession>();
+            CreateMap<CreateSessionCommand, MobTimerSession>();
         }
     }
 }

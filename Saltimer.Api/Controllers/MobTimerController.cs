@@ -1,10 +1,9 @@
 #nullable disable
+using System.Net;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Saltimer.Api.Dto;
-using Saltimer.Api.Models;
 using Saltimer.Api.Queries;
 
 namespace Saltimer.Api.Controllers
@@ -39,20 +38,10 @@ namespace Saltimer.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<MobTimerResponse>> PostMobTimerSession(CreateMobTimerDto request)
+        public async Task<ActionResult<MobTimerResponse>> PostMobTimerSession(CreateSessionCommand request)
         {
-            var currentUser = _authService.GetCurrentUser();
-            var newMobTimer = _mapper.Map<MobTimerSession>(request);
-            newMobTimer.Owner = currentUser;
-            newMobTimer = _context.MobTimerSession.Add(newMobTimer).Entity;
-            _context.SessionMember.Add(new SessionMember()
-            {
-                User = currentUser,
-                Session = newMobTimer
-            });
 
-            await _context.SaveChangesAsync();
-            var response = _mapper.Map<MobTimerResponse>(newMobTimer);
+            var response = await _mediator.Send(request);
 
             return CreatedAtAction("GetMobTimerSession", new { id = response.Id }, response);
         }
@@ -60,28 +49,17 @@ namespace Saltimer.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMobTimerSession(int id)
         {
-            var currentUser = _authService.GetCurrentUser();
-            var mobTimerSession = await _context.MobTimerSession
-                .Include(ms => ms.Members)
-                .Where(ms => ms.Owner.Id == currentUser.Id)
-                .Where(ms => ms.Id == id)
-                .SingleOrDefaultAsync();
-
-            if (mobTimerSession == null)
+            try
             {
-                return NotFound();
+                await _mediator.Send(new DeleteSessionCommand() { Id = id });
+                return NoContent();
+            }
+            catch (HttpRequestException e) when (e.StatusCode == HttpStatusCode.NotFound)
+            {
+                return NoContent();
             }
 
-            _context.RemoveRange(mobTimerSession);
-            _context.RemoveRange(mobTimerSession.Members);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
         }
 
-        private bool mobTimerSessionExists(int id)
-        {
-            return _context.MobTimerSession.Any(e => e.Id == id);
-        }
     }
 }
