@@ -10397,11 +10397,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "d:\\Development\\Backend\\DotNet\\Saltimer-BE\\Saltimer.Api\\Saltimer.Api.csproj",
+      "projectUniqueName": "D:\\Development\\Backend\\DotNet\\Saltimer-BE\\Saltimer.Api\\Saltimer.Api.csproj",
       "projectName": "Saltimer.Api",
-      "projectPath": "d:\\Development\\Backend\\DotNet\\Saltimer-BE\\Saltimer.Api\\Saltimer.Api.csproj",
+      "projectPath": "D:\\Development\\Backend\\DotNet\\Saltimer-BE\\Saltimer.Api\\Saltimer.Api.csproj",
       "packagesPath": "C:\\Users\\Abel Sintaro\\.nuget\\packages\\",
-      "outputPath": "d:\\Development\\Backend\\DotNet\\Saltimer-BE\\Saltimer.Api\\obj\\",
+      "outputPath": "D:\\Development\\Backend\\DotNet\\Saltimer-BE\\Saltimer.Api\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Abel Sintaro\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -10520,13 +10520,5 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.300\\RuntimeIdentifierGraph.json"
       }
     }
-  },
-  "logs": [
-    {
-      "code": "Undefined",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Problem reading the cache file d:\\Development\\Backend\\DotNet\\Saltimer-BE\\Saltimer.Api\\obj\\project.nuget.cache : Invalid property identifier character: <. Path 'version', line 3, position 0."
-    }
-  ]
+  }
 }

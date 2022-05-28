@@ -21,7 +21,7 @@ public class GetSessionMemberHandler : BaseHandler, IRequestHandler<GetSessionMe
                 .FirstOrDefaultAsync();
 
         if (targetMobTimer == null)
-            throw new HttpRequestException(HttpStatusCode.GetName(HttpStatusCode.NotFound), null, HttpStatusCode.NotFound);
+            throw new HttpRequestException("Mob timer session not found.", null, HttpStatusCode.NotFound);
 
         return await _context.SessionMember
                 .Where(sm => sm.Session.Id == targetMobTimer.Id)

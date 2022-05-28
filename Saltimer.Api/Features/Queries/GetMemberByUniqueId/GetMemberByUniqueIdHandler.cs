@@ -19,7 +19,7 @@ public class GetMemberByUniqueIdHandler : BaseHandler, IRequestHandler<GetMember
                 .Select(sm => sm.Session)
                 .FirstOrDefaultAsync();
 
-        if (targetMobTimer == null) throw new HttpRequestException(HttpStatusCode.GetName(HttpStatusCode.NotFound), null, HttpStatusCode.NotFound);
+        if (targetMobTimer == null) throw new HttpRequestException("mob timer session not found.", null, HttpStatusCode.NotFound);
 
         return await _context.SessionMember
                 .Where(sm => sm.Session.Id == targetMobTimer.Id)

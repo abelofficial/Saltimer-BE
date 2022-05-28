@@ -21,11 +21,11 @@ public class RemoveSessionMemberHandler : BaseHandler, IRequestHandler<RemoveSes
                     .Include(sm => sm.User)
                     .SingleOrDefaultAsync(sm => sm.Session.Id == request.MobTimerId && sm.User.Id == request.UserId);
 
-        if (sessionMember == null) throw new HttpRequestException(HttpStatusCode.GetName(HttpStatusCode.NotFound), null, HttpStatusCode.NotFound);
+        if (sessionMember == null) throw new HttpRequestException("Mob timer session not found.", null, HttpStatusCode.NotFound);
 
 
         if (sessionMember.Session.Owner.Id != currentUser.Id && sessionMember.User.Id != currentUser.Id)
-            throw new HttpRequestException(HttpStatusCode.GetName(HttpStatusCode.Forbidden), null, HttpStatusCode.Forbidden);
+            throw new HttpRequestException("You don't have enough permission for this action.", null, HttpStatusCode.Forbidden);
 
         if (sessionMember.Session.Owner.Id == currentUser.Id && sessionMember.User.Id == currentUser.Id)
         {

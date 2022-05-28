@@ -16,7 +16,7 @@ public class GetUserByIdHandler : BaseHandler, IRequestHandler<GetUserByIdQuery,
 
         if (user == null)
         {
-            throw new HttpRequestException(HttpStatusCode.GetName(HttpStatusCode.NotFound), null, HttpStatusCode.NotFound);
+            throw new HttpRequestException("User not found.", null, HttpStatusCode.NotFound);
         }
 
         return _mapper.Map<UserResponseDto>(user);

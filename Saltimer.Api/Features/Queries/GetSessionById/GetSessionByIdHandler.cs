@@ -23,7 +23,7 @@ public class GetSessionByIdHandler : BaseHandler, IRequestHandler<GetSessionById
 
         if (mobTimerSession == null)
         {
-            throw new HttpRequestException("Not found", null, HttpStatusCode.NotFound);
+            throw new HttpRequestException("Mob timer session not found.", null, HttpStatusCode.NotFound);
         }
 
         return mobTimerSession;

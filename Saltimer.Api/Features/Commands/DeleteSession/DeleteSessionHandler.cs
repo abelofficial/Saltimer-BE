@@ -23,7 +23,7 @@ public class DeleteSessionHandler : BaseHandler, IRequestHandler<DeleteSessionCo
 
         if (mobTimerSession == null)
         {
-            throw new HttpRequestException(HttpStatusCode.GetName(HttpStatusCode.NotFound), null, HttpStatusCode.NotFound);
+            throw new HttpRequestException("Mob timer session not found.", null, HttpStatusCode.NotFound);
         }
 
         _context.RemoveRange(mobTimerSession);

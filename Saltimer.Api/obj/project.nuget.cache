@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "XMNhhJNsy/y66Anh49+rH3fWATSC7aSCDnSphbtc2Q8b/cdqhcIGutKulM/luOjDx55pnPCHPdVjJG9chl2umA==",
+  "dgSpecHash": "lrLRdsNExbpn56SfE6F7FWISIeUlQtYZpZEOxd1Km0dateb9c2ll3ImHIUchM2FAxC6SM/NHovmYmsO6nyLCWQ==",
   "success": true,
-  "projectFilePath": "d:\\Development\\Backend\\DotNet\\Saltimer-BE\\Saltimer.Api\\Saltimer.Api.csproj",
+  "projectFilePath": "D:\\Development\\Backend\\DotNet\\Saltimer-BE\\Saltimer.Api\\Saltimer.Api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Abel Sintaro\\.nuget\\packages\\automapper\\10.1.1\\automapper.10.1.1.nupkg.sha512",
     "C:\\Users\\Abel Sintaro\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\8.1.1\\automapper.extensions.microsoft.dependencyinjection.8.1.1.nupkg.sha512",
@@ -202,12 +202,5 @@
     "C:\\Users\\Abel Sintaro\\.nuget\\packages\\system.xml.readerwriter\\4.3.0\\system.xml.readerwriter.4.3.0.nupkg.sha512",
     "C:\\Users\\Abel Sintaro\\.nuget\\packages\\system.xml.xdocument\\4.3.0\\system.xml.xdocument.4.3.0.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "Undefined",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Problem reading the cache file d:\\Development\\Backend\\DotNet\\Saltimer-BE\\Saltimer.Api\\obj\\project.nuget.cache : Invalid property identifier character: <. Path 'version', line 3, position 0."
-    }
-  ]
+  "logs": []
 }
