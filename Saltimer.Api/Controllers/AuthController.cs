@@ -1,50 +1,34 @@
 ﻿using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Saltimer.Api.Command;
 using Saltimer.Api.Dto;
-using Saltimer.Api.Models;
+using Saltimer.Api.Queries;
 
 namespace Saltimer.Api.Controllers
 {
     public class AuthController : BaseController
     {
-        public AuthController(IMapper mapper, IAuthService authService, SaltimerDBContext context)
-            : base(mapper, authService, context) { }
+        private IMediator _mediator;
+        public AuthController(IMediator mediator, IMapper mapper, IAuthService authService, SaltimerDBContext context)
+            : base(mapper, authService, context)
+        {
+            _mediator = mediator;
+        }
 
         [HttpGet("user")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserResponseDto))]
-        public ActionResult<UserResponseDto> GetMe()
+        public async Task<IActionResult> GetMe()
         {
-            var currentUser = _authService.GetCurrentUser();
-            var response = _mapper.Map<UserResponseDto>(currentUser);
-            return Ok(response);
+
+            return Ok(await _mediator.Send(new GetCurrentUserQuery()));
         }
 
         [HttpPut("user")]
-        public async Task<IActionResult> PutUser(UpdateUserDto request)
+        public async Task<IActionResult> PutUser(UpdateUserCommand request)
         {
-            var currentUser = _authService.GetCurrentUser();
-            var targetUser = await _context.User.Where(u => u.Id == currentUser.Id).SingleOrDefaultAsync();
-
-            if (_context.User.Any(e => e.Id != targetUser.Id && e.Username == request.Username))
-                return BadRequest(new ErrorResponse()
-                {
-                    Status = StatusCodes.Status400BadRequest,
-                    Message = "Username is already taken."
-                });
-
-            if (_context.User.Any(e => e.Id != targetUser.Id && e.EmailAddress == request.EmailAddress))
-                return BadRequest(new ErrorResponse()
-                {
-                    Status = StatusCodes.Status400BadRequest,
-                    Message = "Email address is already taken."
-                });
-
-            _mapper.Map(request, targetUser);
-            _context.Entry(targetUser).State = EntityState.Modified;
-
-            await _context.SaveChangesAsync();
+            await _mediator.Send(request);
 
             return NoContent();
         }
@@ -52,50 +36,19 @@ namespace Saltimer.Api.Controllers
         [HttpPost("register"), AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserResponseDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
-        public async Task<ActionResult> Register(RegisterDto request)
+        public async Task<IActionResult> Register(RegisterUserCommand request)
         {
-            if (_context.User.Any(e => e.Username == request.Username))
-                return BadRequest(new ErrorResponse()
-                {
-                    Status = StatusCodes.Status400BadRequest,
-                    Message = "Username is already taken."
-                });
 
-            if (_context.User.Any(e => e.EmailAddress == request.EmailAddress))
-                return BadRequest(new ErrorResponse()
-                {
-                    Status = StatusCodes.Status400BadRequest,
-                    Message = "Email address is already taken."
-                });
-
-            _authService.CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
-
-            var newUser = _mapper.Map<User>(request);
-            newUser.PasswordHash = passwordHash;
-            newUser.PasswordSalt = passwordSalt;
-
-            newUser = _context.User.Add(newUser).Entity;
-            await _context.SaveChangesAsync();
-
-            var response = _mapper.Map<UserResponseDto>(newUser);
-
-            return Ok(response);
+            return Ok(await _mediator.Send(request));
         }
 
         [HttpPost("login"), AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LoginResponse))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult> Login(LoginDto request)
+        public async Task<IActionResult> Login(LoginUserCommand request)
         {
-            var targetUser = await _context.User.SingleOrDefaultAsync(c => c.Username == request.Username);
 
-            if (targetUser == null || !_authService.VerifyPasswordHash(request.Password, targetUser.PasswordHash, targetUser.PasswordSalt))
-            {
-                return Unauthorized();
-            }
-
-            string token = _authService.CreateToken(targetUser);
-            return Ok(new LoginResponse() { Token = token });
+            return Ok(await _mediator.Send(request));
         }
 
     }

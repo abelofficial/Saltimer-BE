@@ -1,44 +1,36 @@
 #nullable disable
 using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Saltimer.Api.Dto;
+using Saltimer.Api.Queries;
 
 namespace Saltimer.Api.Controllers
 {
     public class UserController : BaseController
     {
-        public UserController(IMapper mapper, IAuthService authService, SaltimerDBContext context)
-             : base(mapper, authService, context) { }
+        private IMediator _mediator;
+        public UserController(IMediator mediator, IMapper mapper, IAuthService authService, SaltimerDBContext context)
+             : base(mapper, authService, context)
+        {
+            _mediator = mediator;
+        }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserResponseDto>>> GetUser(string? filterTerm)
         {
             //return await _context.User.ToListAsync();
-            return await _context.User
-                .Where(u => filterTerm == null ? true :
-                            u.Username.Contains(filterTerm) ||
-                            u.EmailAddress.Contains(filterTerm))
-                .Select(u => _mapper.Map<UserResponseDto>(u))
-                .ToListAsync();
+            return Ok(await _mediator.Send(new GetAllUsersQuery() { Filter = filterTerm }));
+
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<UserResponseDto>> GetUser(int id)
         {
-            var user = await _context.User.FindAsync(id);
+            return Ok(await _mediator.Send(new GetUserByIdQuery() { Id = id }));
 
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return _mapper.Map<UserResponseDto>(user);
         }
 
-        private bool UserExists(int id)
-        {
-            return _context.User.Any(e => e.Id == id);
-        }
+
     }
 }

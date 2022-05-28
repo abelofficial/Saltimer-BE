@@ -1,12 +1,15 @@
 {
   "version": 2,
-  "dgSpecHash": "ADEAS84vwCGXbPvPRWJsm+q3ZQYG4Zqj525LDJVJnFrQHBy39eHt/9Pb3dUoHaZ9XSO6nwaqYU1F0jbY99WVjQ==",
+  "dgSpecHash": "XMNhhJNsy/y66Anh49+rH3fWATSC7aSCDnSphbtc2Q8b/cdqhcIGutKulM/luOjDx55pnPCHPdVjJG9chl2umA==",
   "success": true,
   "projectFilePath": "d:\\Development\\Backend\\DotNet\\Saltimer-BE\\Saltimer.Api\\Saltimer.Api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Abel Sintaro\\.nuget\\packages\\automapper\\10.1.1\\automapper.10.1.1.nupkg.sha512",
     "C:\\Users\\Abel Sintaro\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\8.1.1\\automapper.extensions.microsoft.dependencyinjection.8.1.1.nupkg.sha512",
     "C:\\Users\\Abel Sintaro\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
+    "C:\\Users\\Abel Sintaro\\.nuget\\packages\\mediatr\\10.0.1\\mediatr.10.0.1.nupkg.sha512",
+    "C:\\Users\\Abel Sintaro\\.nuget\\packages\\mediatr.contracts\\1.0.1\\mediatr.contracts.1.0.1.nupkg.sha512",
+    "C:\\Users\\Abel Sintaro\\.nuget\\packages\\mediatr.extensions.microsoft.dependencyinjection\\10.0.1\\mediatr.extensions.microsoft.dependencyinjection.10.0.1.nupkg.sha512",
     "C:\\Users\\Abel Sintaro\\.nuget\\packages\\messagepack\\2.1.152\\messagepack.2.1.152.nupkg.sha512",
     "C:\\Users\\Abel Sintaro\\.nuget\\packages\\messagepack.annotations\\2.1.152\\messagepack.annotations.2.1.152.nupkg.sha512",
     "C:\\Users\\Abel Sintaro\\.nuget\\packages\\messagepackanalyzer\\2.1.152\\messagepackanalyzer.2.1.152.nupkg.sha512",
@@ -199,5 +202,12 @@
     "C:\\Users\\Abel Sintaro\\.nuget\\packages\\system.xml.readerwriter\\4.3.0\\system.xml.readerwriter.4.3.0.nupkg.sha512",
     "C:\\Users\\Abel Sintaro\\.nuget\\packages\\system.xml.xdocument\\4.3.0\\system.xml.xdocument.4.3.0.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "Undefined",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Problem reading the cache file d:\\Development\\Backend\\DotNet\\Saltimer-BE\\Saltimer.Api\\obj\\project.nuget.cache : Invalid property identifier character: <. Path 'version', line 3, position 0."
+    }
+  ]
 }
