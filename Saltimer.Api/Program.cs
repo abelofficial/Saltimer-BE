@@ -5,22 +5,36 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Npgsql;
 using Saltimer.Api.Hubs;
 using Saltimer.Api.Middleware;
 using Saltimer.Api.Models;
 using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
+{
+    var connectionString = string.Empty;
+    if (builder.Environment.EnvironmentName == "production")
+    {
+        var conStrBuilder = new NpgsqlConnectionStringBuilder();
 
-if (Environment.GetEnvironmentVariable("ENVIRONMENT") == "production")
-{
-    builder.Services.AddDbContext<SaltimerDBContext>(options =>
-        options.UseNpgsql(Environment.GetEnvironmentVariable("HerokuDB")));
-}
-else
-{
-    builder.Services.AddDbContext<SaltimerDBContext>(options =>
-       options.UseSqlServer(builder.Configuration.GetConnectionString("SaltimerDBContext")));
+        conStrBuilder.Host = Environment.GetEnvironmentVariable("DbHost");
+        conStrBuilder.Database = Environment.GetEnvironmentVariable("DbName");
+        conStrBuilder.Username = Environment.GetEnvironmentVariable("DbUsername");
+        conStrBuilder.Password = Environment.GetEnvironmentVariable("DbPassword");
+        conStrBuilder.SslMode = SslMode.Require;
+        conStrBuilder.TrustServerCertificate = true;
+
+        connectionString = conStrBuilder.ConnectionString;
+    }
+    else
+    {
+        connectionString = builder.Configuration.GetConnectionString("SaltimerDBContext");
+    }
+
+    builder.Services.AddDbContext<SaltimerDBContext>(
+        options => options.UseNpgsql(connectionString)
+    );
 }
 
 
@@ -78,8 +92,17 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseOpenApi();
+    app.UseSwaggerUi3();
+}
+if (app.Environment.IsProduction())
+{
+    app.UseOpenApi();
+    app.UseReDoc(c =>
+   {
+       c.DocumentTitle = "Portfolio API";
+       c.SpecUrl = "/swagger/v1/swagger.json";
+   });
 }
 
 app.UseRouting();
