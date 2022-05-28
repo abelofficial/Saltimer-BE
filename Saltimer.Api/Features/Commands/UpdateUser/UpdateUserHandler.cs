@@ -9,7 +9,7 @@ public class UpdateUserHandler : BaseHandler, IRequestHandler<UpdateUserCommand>
 {
 
 
-    public UpdateUserHandler(IMediator mediator, IMapper mapper, IAuthService authService, SaltimerDBContext context)
+    public UpdateUserHandler(IMapper mapper, IAuthService authService, SaltimerDBContext context)
             : base(mapper, authService, context) { }
 
     public async Task<Unit> Handle(UpdateUserCommand request, CancellationToken cancellationToken)

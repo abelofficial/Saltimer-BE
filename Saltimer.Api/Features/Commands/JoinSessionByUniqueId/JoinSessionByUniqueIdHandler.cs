@@ -10,7 +10,7 @@ public class JoinSessionByUniqueIdHandler : BaseHandler, IRequestHandler<JoinSes
 {
 
 
-    public JoinSessionByUniqueIdHandler(IMediator mediator, IMapper mapper, IAuthService authService, SaltimerDBContext context)
+    public JoinSessionByUniqueIdHandler(IMapper mapper, IAuthService authService, SaltimerDBContext context)
             : base(mapper, authService, context) { }
 
     public async Task<SessionMemberResponse> Handle(JoinSessionByUniqueIdCommand request, CancellationToken cancellationToken)

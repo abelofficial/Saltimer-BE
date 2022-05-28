@@ -9,7 +9,7 @@ namespace Saltimer.Api.Handlers;
 public class RegisterUserHandler : BaseHandler, IRequestHandler<RegisterUserCommand, UserResponseDto>
 {
 
-    public RegisterUserHandler(IMediator mediator, IMapper mapper, IAuthService authService, SaltimerDBContext context)
+    public RegisterUserHandler(IMapper mapper, IAuthService authService, SaltimerDBContext context)
             : base(mapper, authService, context) { }
     public async Task<UserResponseDto> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {

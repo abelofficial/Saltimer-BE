@@ -8,7 +8,7 @@ using Saltimer.Api.Queries;
 namespace Saltimer.Api.Handlers;
 public class GetMemberByUniqueIdHandler : BaseHandler, IRequestHandler<GetMemberByUniqueIdQuery, IEnumerable<UserResponseDto>>
 {
-    public GetMemberByUniqueIdHandler(IMediator mediator, IMapper mapper, IAuthService authService, SaltimerDBContext context)
+    public GetMemberByUniqueIdHandler(IMapper mapper, IAuthService authService, SaltimerDBContext context)
             : base(mapper, authService, context) { }
 
     public async Task<IEnumerable<UserResponseDto>> Handle(GetMemberByUniqueIdQuery request, CancellationToken cancellationToken)

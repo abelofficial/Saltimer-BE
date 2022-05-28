@@ -7,7 +7,7 @@ using Saltimer.Api.Dto;
 namespace Saltimer.Api.Handlers;
 public class LoginUserHandler : BaseHandler, IRequestHandler<LoginUserCommand, LoginResponse>
 {
-    public LoginUserHandler(IMediator mediator, IMapper mapper, IAuthService authService, SaltimerDBContext context)
+    public LoginUserHandler(IMapper mapper, IAuthService authService, SaltimerDBContext context)
             : base(mapper, authService, context) { }
 
     public async Task<LoginResponse> Handle(LoginUserCommand request, CancellationToken cancellationToken)

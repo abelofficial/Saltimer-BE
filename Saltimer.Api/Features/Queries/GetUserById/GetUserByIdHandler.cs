@@ -7,7 +7,7 @@ using Saltimer.Api.Queries;
 namespace Saltimer.Api.Handlers;
 public class GetUserByIdHandler : BaseHandler, IRequestHandler<GetUserByIdQuery, UserResponseDto>
 {
-    public GetUserByIdHandler(IMediator mediator, IMapper mapper, IAuthService authService, SaltimerDBContext context)
+    public GetUserByIdHandler(IMapper mapper, IAuthService authService, SaltimerDBContext context)
             : base(mapper, authService, context) { }
 
     public async Task<UserResponseDto> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)

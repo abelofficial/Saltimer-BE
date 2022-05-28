@@ -9,7 +9,7 @@ public class DeleteSessionHandler : BaseHandler, IRequestHandler<DeleteSessionCo
 {
 
 
-    public DeleteSessionHandler(IMediator mediator, IMapper mapper, IAuthService authService, SaltimerDBContext context)
+    public DeleteSessionHandler(IMapper mapper, IAuthService authService, SaltimerDBContext context)
             : base(mapper, authService, context) { }
 
     public async Task<Unit> Handle(DeleteSessionCommand request, CancellationToken cancellationToken)

@@ -8,7 +8,7 @@ public class CreateSessionHandler : BaseHandler, IRequestHandler<CreateSessionCo
 {
 
 
-    public CreateSessionHandler(IMediator mediator, IMapper mapper, IAuthService authService, SaltimerDBContext context)
+    public CreateSessionHandler(IMapper mapper, IAuthService authService, SaltimerDBContext context)
             : base(mapper, authService, context) { }
 
     public async Task<MobTimerResponse> Handle(CreateSessionCommand request, CancellationToken cancellationToken)

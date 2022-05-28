@@ -10,7 +10,7 @@ public class CreateSessionMemberHandler : BaseHandler, IRequestHandler<CreateSes
 {
 
 
-    public CreateSessionMemberHandler(IMediator mediator, IMapper mapper, IAuthService authService, SaltimerDBContext context)
+    public CreateSessionMemberHandler(IMapper mapper, IAuthService authService, SaltimerDBContext context)
             : base(mapper, authService, context) { }
 
     public async Task<SessionMemberResponse> Handle(CreateSessionMemberCommand request, CancellationToken cancellationToken)
