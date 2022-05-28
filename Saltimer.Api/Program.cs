@@ -57,6 +57,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
@@ -69,6 +70,10 @@ builder.Services.AddSwaggerGen(options =>
 
     options.OperationFilter<SecurityRequirementsOperationFilter>();
 });
+
+builder.Services.AddSwaggerDocument();
+
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -90,20 +95,13 @@ builder.Services.AddSingleton<IDictionary<string, SessionHub>>(
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+app.UseOpenApi();
+app.UseSwaggerUi3();
+app.UseReDoc(c =>
 {
-    app.UseOpenApi();
-    app.UseSwaggerUi3();
-}
-if (app.Environment.IsProduction())
-{
-    app.UseOpenApi();
-    app.UseReDoc(c =>
-   {
-       c.DocumentTitle = "Portfolio API";
-       c.SpecUrl = "/swagger/v1/swagger.json";
-   });
-}
+    c.DocumentTitle = "Saltimer API";
+    c.SpecUrl = "/swagger/v1/swagger.json";
+});
 
 app.UseRouting();
 
