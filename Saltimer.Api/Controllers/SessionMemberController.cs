@@ -1,17 +1,21 @@
 #nullable disable
-using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Saltimer.Api.Attributes;
 using Saltimer.Api.Dto;
 using Saltimer.Api.Queries;
 
 namespace Saltimer.Api.Controllers
 {
-    public class SessionMemberController : BaseController
+    [Route("api/[controller]"), Authorize]
+    [ValidateTokenAttribute]
+    [ApiController]
+    public class SessionMemberController : ControllerBase
     {
         private IMediator _mediator;
-        public SessionMemberController(IMediator mediator, IMapper mapper, IAuthService authService, SaltimerDBContext context)
-            : base(mapper, authService, context)
+        public SessionMemberController(IMediator mediator)
+
         {
             _mediator = mediator;
         }
@@ -67,9 +71,5 @@ namespace Saltimer.Api.Controllers
             return NoContent();
         }
 
-        private bool SessionMemberExists(int id)
-        {
-            return _context.SessionMember.Any(e => e.Id == id);
-        }
     }
 }

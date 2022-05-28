@@ -1,17 +1,20 @@
 #nullable disable
-using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Saltimer.Api.Attributes;
 using Saltimer.Api.Dto;
 using Saltimer.Api.Queries;
 
 namespace Saltimer.Api.Controllers
 {
-    public class UserController : BaseController
+    [Route("api/[controller]"), Authorize]
+    [ValidateTokenAttribute]
+    [ApiController]
+    public class UserController : ControllerBase
     {
         private IMediator _mediator;
-        public UserController(IMediator mediator, IMapper mapper, IAuthService authService, SaltimerDBContext context)
-             : base(mapper, authService, context)
+        public UserController(IMediator mediator)
         {
             _mediator = mediator;
         }
@@ -19,7 +22,6 @@ namespace Saltimer.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserResponseDto>>> GetUser(string? filterTerm)
         {
-            //return await _context.User.ToListAsync();
             return Ok(await _mediator.Send(new GetAllUsersQuery() { Filter = filterTerm }));
 
         }

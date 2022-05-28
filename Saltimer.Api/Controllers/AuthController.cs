@@ -1,18 +1,21 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Saltimer.Api.Attributes;
 using Saltimer.Api.Command;
 using Saltimer.Api.Dto;
 using Saltimer.Api.Queries;
 
 namespace Saltimer.Api.Controllers
 {
-    public class AuthController : BaseController
+    [Route("api/[controller]"), Authorize]
+    [ValidateTokenAttribute]
+    [ApiController]
+    public class AuthController : ControllerBase
     {
         private IMediator _mediator;
-        public AuthController(IMediator mediator, IMapper mapper, IAuthService authService, SaltimerDBContext context)
-            : base(mapper, authService, context)
+        public AuthController(IMediator mediator)
+
         {
             _mediator = mediator;
         }
