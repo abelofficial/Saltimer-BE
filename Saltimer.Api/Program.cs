@@ -1,6 +1,6 @@
 global using Saltimer.Api.Services;
 using System.Text;
-using Npgsql;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -9,12 +9,20 @@ using Saltimer.Api.Hubs;
 using Saltimer.Api.Middleware;
 using Saltimer.Api.Models;
 using Swashbuckle.AspNetCore.Filters;
-using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<SaltimerDBContext>(options =>
+if (Environment.GetEnvironmentVariable("ENVIRONMENT") == "production")
+{
+    builder.Services.AddDbContext<SaltimerDBContext>(options =>
         options.UseNpgsql(Environment.GetEnvironmentVariable("HerokuDB")));
+}
+else
+{
+    builder.Services.AddDbContext<SaltimerDBContext>(options =>
+       options.UseSqlServer(builder.Configuration.GetConnectionString("SaltimerDBContext")));
+}
+
 
 builder.Services.AddCors(options =>
 {
@@ -30,6 +38,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddControllers();
 builder.Services.AddSignalR();
+builder.Services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<IAuthService, AuthService>();

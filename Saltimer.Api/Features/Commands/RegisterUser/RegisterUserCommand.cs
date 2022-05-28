@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using AutoMapper;
+using MediatR;
+using Saltimer.Api.Dto;
 using Saltimer.Api.Models;
 
-namespace Saltimer.Api.Dto
+namespace Saltimer.Api.Command
 {
-    public class RegisterDto
+    public class RegisterUserCommand : IRequest<UserResponseDto>
     {
         private const string passwordErrorMessage = "Password must contain minimum eight characters, at least one letter and one number";
 
@@ -33,11 +35,11 @@ namespace Saltimer.Api.Dto
         public string Password { get; set; }
     }
 
-    public class RegisterDtoToUserProfile : Profile
+    public class RegisterUserCommandToUserProfile : Profile
     {
-        public RegisterDtoToUserProfile()
+        public RegisterUserCommandToUserProfile()
         {
-            CreateMap<RegisterDto, User>();
+            CreateMap<RegisterUserCommand, User>();
         }
     }
 

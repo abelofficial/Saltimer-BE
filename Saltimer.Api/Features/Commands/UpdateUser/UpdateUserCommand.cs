@@ -1,10 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using AutoMapper;
+using MediatR;
 using Saltimer.Api.Models;
 
 namespace Saltimer.Api.Dto
 {
-    public class UpdateUserDto
+    public class UpdateUserCommand : IRequest
     {
         [Required]
         [MinLength(2)]
@@ -30,11 +31,11 @@ namespace Saltimer.Api.Dto
         public string ProfileImage { get; set; }
     }
 
-    public class UserToUpdateUserDtoProfile : Profile
+    public class UserToUpdateUserCommandProfile : Profile
     {
-        public UserToUpdateUserDtoProfile()
+        public UserToUpdateUserCommandProfile()
         {
-            CreateMap<UpdateUserDto, User>();
+            CreateMap<UpdateUserCommand, User>();
         }
     }
 }
