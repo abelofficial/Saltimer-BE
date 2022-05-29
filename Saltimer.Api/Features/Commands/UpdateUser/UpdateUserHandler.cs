@@ -2,7 +2,7 @@ using System.Net;
 using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Saltimer.Api.Dto;
+using Saltimer.Api.Command;
 
 namespace Saltimer.Api.Handlers;
 public class UpdateUserHandler : BaseHandler, IRequestHandler<UpdateUserCommand>

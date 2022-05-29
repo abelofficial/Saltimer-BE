@@ -1,9 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using AutoMapper;
 using MediatR;
-using Saltimer.Api.Models;
 
-namespace Saltimer.Api.Dto
+namespace Saltimer.Api.Command
 {
     public class UpdateUserCommand : IRequest
     {
@@ -31,11 +29,5 @@ namespace Saltimer.Api.Dto
         public string ProfileImage { get; set; }
     }
 
-    public class UserToUpdateUserCommandProfile : Profile
-    {
-        public UserToUpdateUserCommandProfile()
-        {
-            CreateMap<UpdateUserCommand, User>();
-        }
-    }
+
 }

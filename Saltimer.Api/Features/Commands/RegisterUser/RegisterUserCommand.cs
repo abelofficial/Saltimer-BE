@@ -2,7 +2,6 @@
 using AutoMapper;
 using MediatR;
 using Saltimer.Api.Dto;
-using Saltimer.Api.Models;
 
 namespace Saltimer.Api.Command
 {
@@ -39,7 +38,7 @@ namespace Saltimer.Api.Command
     {
         public RegisterUserCommandToUserProfile()
         {
-            CreateMap<RegisterUserCommand, User>();
+
         }
     }
 

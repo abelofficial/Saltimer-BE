@@ -1,5 +1,6 @@
 using AutoMapper;
 using MediatR;
+using Saltimer.Api.Command;
 using Saltimer.Api.Dto;
 using Saltimer.Api.Models;
 

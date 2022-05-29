@@ -2,6 +2,7 @@ using System.Net;
 using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Saltimer.Api.Command;
 using Saltimer.Api.Dto;
 
 namespace Saltimer.Api.Handlers;
