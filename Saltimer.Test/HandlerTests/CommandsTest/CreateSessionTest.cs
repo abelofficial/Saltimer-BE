@@ -24,7 +24,7 @@ public class CreateSessionTest : SqliteInMemory
     {
         var _command = new CreateSessionCommand()
         {
-            DisplayName = "Test",
+            DisplayName = "New Mob Timer",
             RoundTime = 30,
             BreakTime = 30,
         };

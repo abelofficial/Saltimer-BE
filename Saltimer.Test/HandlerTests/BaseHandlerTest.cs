@@ -1,9 +1,7 @@
-using System.Collections.Generic;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Saltimer.Api.Mapping;
-using Saltimer.Api.Models;
 using Saltimer.Api.Services;
 using Saltimer.Test.Mocks;
 
@@ -13,23 +11,22 @@ public abstract class BaseHandlerTest
 {
 
     public readonly IMapper _mapper;
-    public readonly Mock<IAuthService> _mockAuthService;
+    public Mock<IAuthService> _mockAuthService;
 
     protected BaseHandlerTest(DbContextOptions<SaltimerDBContext> context)
     {
         ContextOptions = context;
         Seed();
+
         _mockAuthService = MockAuthService.GetAuthService();
 
         var mapperConfig = new MapperConfiguration(c =>
-            {
-                c.AddProfile<MappingProfile>();
-            });
-
+        {
+            c.AddProfile<MappingProfile>();
+        });
 
         _mapper = mapperConfig.CreateMapper();
     }
-
 
     protected DbContextOptions<SaltimerDBContext> ContextOptions { get; }
 
@@ -40,15 +37,21 @@ public abstract class BaseHandlerTest
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
-            var data = new List<User>() {
-                MockUsers.GetAdminUser(),
-                MockUsers.GetUniqueUser(1)
-            };
+            var adminUser = context.Add(MockUsers.GetAdminUser()).Entity;
+            var uniqueUser = context.Add(MockUsers.GetUniqueUser(1)).Entity;
 
-            context.AddRange(data);
+            var mobSessionData = context.Add(MockMobTimers.GetMobTimer(adminUser)).Entity;
+
+            adminUser.MobTimers.Add(mobSessionData);
+            mobSessionData.Owner = adminUser;
+            mobSessionData.Members.Add(MockMobTimers.GetMobTimerMember(adminUser, 1, mobSessionData));
+            mobSessionData.Members.Add(MockMobTimers.GetMobTimerMember(uniqueUser, 2, mobSessionData));
+
             context.SaveChanges();
+
         }
     }
+
 
 
 }

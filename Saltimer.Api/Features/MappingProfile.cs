@@ -12,7 +12,7 @@ public class MappingProfile : Profile
         CreateMap<CreateSessionCommand, MobTimerSession>();
         CreateMap<RegisterUserCommand, User>();
         CreateMap<UpdateUserCommand, User>();
-        CreateMap<MobTimerSession, CreateSessionCommand>();
+        CreateMap<CreateSessionCommand, MobTimerSession>();
         CreateMap<MobTimerSession, MobTimerResponse>();
         CreateMap<User, UserResponseDto>();
     }

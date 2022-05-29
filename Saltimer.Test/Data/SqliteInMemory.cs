@@ -4,11 +4,13 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Saltimer.Test.HandlerTests;
+using Saltimer.Test.Mocks;
 
 namespace efCdCollection.Tests.Data;
 public class SqliteInMemory : BaseHandlerTest, IDisposable
 {
     private readonly DbConnection _connection;
+    
     public SqliteInMemory()
       : base(
           new DbContextOptionsBuilder<SaltimerDBContext>()

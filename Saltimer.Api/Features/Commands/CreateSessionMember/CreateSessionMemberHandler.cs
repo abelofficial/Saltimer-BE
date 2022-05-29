@@ -23,7 +23,7 @@ public class CreateSessionMemberHandler : BaseHandler, IRequestHandler<CreateSes
 
         var targetMobTimer = await _context.SessionMember
                 .Include(sm => sm.Session.Members)
-                .Where(sm => sm.User.Id == currentUser.Id)
+                .Where(sm => sm.User.Username == currentUser.Username)
                 .Where(sm => sm.Session.Id == request.MobTimerId)
                 .Select(sm => sm.Session)
                 .FirstOrDefaultAsync();
@@ -34,7 +34,7 @@ public class CreateSessionMemberHandler : BaseHandler, IRequestHandler<CreateSes
         var userAlreadyMember = _context.SessionMember
                 .Any(sm => sm.Session.Id == request.MobTimerId && sm.User.Id == targetUser.Id);
 
-        if (userAlreadyMember) throw new HttpRequestException("Provided user is already a member.", null, HttpStatusCode.NotFound);
+        if (userAlreadyMember) throw new HttpRequestException("Provided user is already a member.", null, HttpStatusCode.BadRequest);
 
         var newRecord = _context.SessionMember.Add(new SessionMember()
         {

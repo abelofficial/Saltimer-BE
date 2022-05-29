@@ -21,7 +21,7 @@ public class GetCurrentUserTest : SqliteInMemory
     }
 
     [Fact]
-    public async void Should_be_abel_to_fetch_all_users()
+    public async void Should_be_abel_to_fetch_current_user()
     {
         var query = new GetCurrentUserQuery();
 
