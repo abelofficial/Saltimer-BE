@@ -1,11 +1,12 @@
 global using Saltimer.Api.Services;
+using System.Reflection;
 using System.Text;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using Npgsql;
+using NSwag;
 using Saltimer.Api.Hubs;
 using Saltimer.Api.Middleware;
 using Saltimer.Api.Models;
@@ -63,18 +64,25 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddSwaggerGen(options =>
 {
-    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-    {
-        Description = "Standard Authorization header using the Bearer scheme (\"bearer {token}\")",
-        In = ParameterLocation.Header,
-        Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey
-    });
 
     options.OperationFilter<SecurityRequirementsOperationFilter>();
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
-builder.Services.AddSwaggerDocument();
+builder.Services.AddSwaggerDocument(config =>
+{
+    config.Version = "v1";
+    config.Title = "Saltimer";
+    config.Description = "A RestAPI for Saltimer.";
+    config.AddSecurity("oauth2", new NSwag.OpenApiSecurityScheme
+    {
+        Description = "Standard Authorization header using the Bearer scheme (\"bearer {token}\")",
+        In = OpenApiSecurityApiKeyLocation.Header,
+        Name = "Authorization",
+        Type = OpenApiSecuritySchemeType.ApiKey
+    });
+});
 
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

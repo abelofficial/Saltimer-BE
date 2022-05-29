@@ -19,20 +19,27 @@ namespace Saltimer.Api.Controllers
             _mediator = mediator;
         }
 
+        /// <summary>
+        /// Get all users.
+        /// </summary>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserResponseDto>>> GetUser(string? filterTerm)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<UserResponseDto>))]
+        public async Task<ActionResult<IEnumerable<UserResponseDto>>> GetUsers(string? filterTerm)
         {
             return Ok(await _mediator.Send(new GetAllUsersQuery() { Filter = filterTerm }));
 
         }
 
+        /// <summary>
+        /// Get a single user.
+        /// </summary>
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserResponseDto))]
         public async Task<ActionResult<UserResponseDto>> GetUser(int id)
         {
             return Ok(await _mediator.Send(new GetUserByIdQuery() { Id = id }));
 
         }
-
 
     }
 }
