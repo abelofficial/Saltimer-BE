@@ -14,6 +14,7 @@ public class MappingProfile : Profile
         CreateMap<UpdateUserCommand, User>();
         CreateMap<MobTimerSession, CreateSessionCommand>();
         CreateMap<MobTimerSession, MobTimerResponse>();
+        CreateMap<User, UserResponseDto>();
     }
 
 

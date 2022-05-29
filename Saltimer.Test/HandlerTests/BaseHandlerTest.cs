@@ -42,10 +42,20 @@ public abstract class BaseHandlerTest
 
             var data = new List<User>() {
                 new User() {
-                    Username =  "",
-                    FirstName =  "",
-                    LastName =  "",
-                    EmailAddress =  "",
+                    Username =  "User 1",
+                    FirstName =  "User 1",
+                    LastName =  "User 1",
+                    EmailAddress =  "User 1",
+                    PasswordHash =  new byte[0],
+                    PasswordSalt =  new byte[0],
+                    MobTimers =  new List<MobTimerSession>(),
+
+                },
+                new User() {
+                    Username =  "User 2",
+                    FirstName =  "User 2",
+                    LastName =  "User 2",
+                    EmailAddress =  "User 2",
                     PasswordHash =  new byte[0],
                     PasswordSalt =  new byte[0],
                     MobTimers =  new List<MobTimerSession>(),
@@ -53,7 +63,8 @@ public abstract class BaseHandlerTest
                 }
             };
 
-            context.AddRange(data); context.SaveChanges();
+            context.AddRange(data);
+            context.SaveChanges();
         }
     }
 
