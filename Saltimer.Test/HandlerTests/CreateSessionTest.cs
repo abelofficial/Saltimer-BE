@@ -1,33 +1,41 @@
-using System.Collections.Generic;
-using efCdCollection.Api.Controllers;
-using efCdCollection.Api.Dtos;
-using efCdCollection.Api.Repository;
-using Moq;
+using System.Threading;
+using efCdCollection.Tests.Data;
+using FluentAssertions;
+using Saltimer.Api.Command;
+using Saltimer.Api.Dto;
+using Saltimer.Api.Handlers;
 using Xunit;
 
-namespace efCdCollection.Tests;
+namespace Saltimer.Test.HandlerTests;
 
-public class CreateSessionTest
+public class CreateSessionTest : SqliteInMemory
 {
+    private readonly SaltimerDBContext _context;
+    private readonly CreateSessionHandler _handler;
 
-
-    public CreateSessionTest()
+    public CreateSessionTest() : base()
     {
-
-        setupMock();
-    }
-
-    private void setupMock()
-    {
-
+        _context = new SaltimerDBContext(ContextOptions);
+        _handler = new CreateSessionHandler(_mapper, _mockAuthService.Object, _context);
     }
 
     [Fact]
-    public void HAPPY_Should_call_GetAllCDs_one_time()
+    public async void Should_be_abel_to_create_new_session()
     {
-        // Arrange
+        var _command = new CreateSessionCommand()
+        {
+            DisplayName = "Test",
+            RoundTime = 30,
+            BreakTime = 30,
+        };
 
+        var result = await _handler.Handle(_command, CancellationToken.None);
 
+        result.Should().BeOfType<MobTimerResponse>();
     }
 
+
 }
+
+
+
