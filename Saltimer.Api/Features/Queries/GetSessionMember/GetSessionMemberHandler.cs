@@ -8,7 +8,7 @@ using Saltimer.Api.Queries;
 namespace Saltimer.Api.Handlers;
 public class GetSessionMemberHandler : BaseHandler, IRequestHandler<GetSessionMemberQuery, IEnumerable<UserResponseDto>>
 {
-    public GetSessionMemberHandler(IMediator mediator, IMapper mapper, IAuthService authService, SaltimerDBContext context)
+    public GetSessionMemberHandler(IMapper mapper, IAuthService authService, SaltimerDBContext context)
             : base(mapper, authService, context) { }
 
     public async Task<IEnumerable<UserResponseDto>> Handle(GetSessionMemberQuery request, CancellationToken cancellationToken)

@@ -26,15 +26,18 @@ var builder = WebApplication.CreateBuilder(args);
         conStrBuilder.TrustServerCertificate = true;
 
         connectionString = conStrBuilder.ConnectionString;
+        builder.Services.AddDbContext<SaltimerDBContext>(
+            options => options.UseNpgsql(connectionString)
+   );
     }
     else
     {
         connectionString = builder.Configuration.GetConnectionString("SaltimerDBContext");
+        builder.Services.AddDbContext<SaltimerDBContext>(options =>
+             options.UseSqlServer(connectionString ?? throw new InvalidOperationException("Connection string 'UserContext' not found.")));
     }
 
-    builder.Services.AddDbContext<SaltimerDBContext>(
-        options => options.UseNpgsql(connectionString)
-    );
+
 }
 
 

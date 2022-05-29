@@ -6,7 +6,7 @@ using Saltimer.Api.Queries;
 namespace Saltimer.Api.Handlers;
 public class GetCurrentUserHandler : BaseHandler, IRequestHandler<GetCurrentUserQuery, UserResponseDto>
 {
-    public GetCurrentUserHandler(IMediator mediator, IMapper mapper, IAuthService authService, SaltimerDBContext context)
+    public GetCurrentUserHandler(IMapper mapper, IAuthService authService, SaltimerDBContext context)
             : base(mapper, authService, context) { }
 
     public async Task<UserResponseDto> Handle(GetCurrentUserQuery request, CancellationToken cancellationToken)

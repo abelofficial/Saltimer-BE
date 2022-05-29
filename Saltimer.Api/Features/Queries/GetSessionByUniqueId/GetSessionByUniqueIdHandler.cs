@@ -8,7 +8,7 @@ using Saltimer.Api.Queries;
 namespace Saltimer.Api.Handlers;
 public class GetSessionByUniqueIdHandler : BaseHandler, IRequestHandler<GetSessionByUniqueIdQuery, MobTimerResponse>
 {
-    public GetSessionByUniqueIdHandler(IMediator mediator, IMapper mapper, IAuthService authService, SaltimerDBContext context)
+    public GetSessionByUniqueIdHandler(IMapper mapper, IAuthService authService, SaltimerDBContext context)
             : base(mapper, authService, context) { }
 
     public async Task<MobTimerResponse> Handle(GetSessionByUniqueIdQuery request, CancellationToken cancellationToken)

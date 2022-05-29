@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using MediatR;
 
-namespace Saltimer.Api.Dto
+namespace Saltimer.Api.Command
 {
     public class RemoveSessionMemberCommand : IRequest
     {

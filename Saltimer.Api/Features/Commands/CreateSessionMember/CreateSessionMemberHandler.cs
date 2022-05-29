@@ -2,6 +2,7 @@ using System.Net;
 using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Saltimer.Api.Command;
 using Saltimer.Api.Dto;
 using Saltimer.Api.Models;
 
@@ -10,7 +11,7 @@ public class CreateSessionMemberHandler : BaseHandler, IRequestHandler<CreateSes
 {
 
 
-    public CreateSessionMemberHandler(IMediator mediator, IMapper mapper, IAuthService authService, SaltimerDBContext context)
+    public CreateSessionMemberHandler(IMapper mapper, IAuthService authService, SaltimerDBContext context)
             : base(mapper, authService, context) { }
 
     public async Task<SessionMemberResponse> Handle(CreateSessionMemberCommand request, CancellationToken cancellationToken)
@@ -22,7 +23,7 @@ public class CreateSessionMemberHandler : BaseHandler, IRequestHandler<CreateSes
 
         var targetMobTimer = await _context.SessionMember
                 .Include(sm => sm.Session.Members)
-                .Where(sm => sm.User.Id == currentUser.Id)
+                .Where(sm => sm.User.Username == currentUser.Username)
                 .Where(sm => sm.Session.Id == request.MobTimerId)
                 .Select(sm => sm.Session)
                 .FirstOrDefaultAsync();
@@ -33,7 +34,7 @@ public class CreateSessionMemberHandler : BaseHandler, IRequestHandler<CreateSes
         var userAlreadyMember = _context.SessionMember
                 .Any(sm => sm.Session.Id == request.MobTimerId && sm.User.Id == targetUser.Id);
 
-        if (userAlreadyMember) throw new HttpRequestException("Provided user is already a member.", null, HttpStatusCode.NotFound);
+        if (userAlreadyMember) throw new HttpRequestException("Provided user is already a member.", null, HttpStatusCode.BadRequest);
 
         var newRecord = _context.SessionMember.Add(new SessionMember()
         {

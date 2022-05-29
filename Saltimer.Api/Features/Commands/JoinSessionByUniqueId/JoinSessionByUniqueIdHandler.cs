@@ -2,6 +2,7 @@ using System.Net;
 using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Saltimer.Api.Command;
 using Saltimer.Api.Dto;
 using Saltimer.Api.Models;
 
@@ -10,7 +11,7 @@ public class JoinSessionByUniqueIdHandler : BaseHandler, IRequestHandler<JoinSes
 {
 
 
-    public JoinSessionByUniqueIdHandler(IMediator mediator, IMapper mapper, IAuthService authService, SaltimerDBContext context)
+    public JoinSessionByUniqueIdHandler(IMapper mapper, IAuthService authService, SaltimerDBContext context)
             : base(mapper, authService, context) { }
 
     public async Task<SessionMemberResponse> Handle(JoinSessionByUniqueIdCommand request, CancellationToken cancellationToken)

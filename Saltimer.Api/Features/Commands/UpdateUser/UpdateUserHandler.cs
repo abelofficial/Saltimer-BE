@@ -2,14 +2,14 @@ using System.Net;
 using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Saltimer.Api.Dto;
+using Saltimer.Api.Command;
 
 namespace Saltimer.Api.Handlers;
 public class UpdateUserHandler : BaseHandler, IRequestHandler<UpdateUserCommand>
 {
 
 
-    public UpdateUserHandler(IMediator mediator, IMapper mapper, IAuthService authService, SaltimerDBContext context)
+    public UpdateUserHandler(IMapper mapper, IAuthService authService, SaltimerDBContext context)
             : base(mapper, authService, context) { }
 
     public async Task<Unit> Handle(UpdateUserCommand request, CancellationToken cancellationToken)

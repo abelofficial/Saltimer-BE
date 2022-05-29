@@ -1,5 +1,6 @@
 using AutoMapper;
 using MediatR;
+using Saltimer.Api.Command;
 using Saltimer.Api.Dto;
 using Saltimer.Api.Models;
 
@@ -8,7 +9,7 @@ public class CreateSessionHandler : BaseHandler, IRequestHandler<CreateSessionCo
 {
 
 
-    public CreateSessionHandler(IMediator mediator, IMapper mapper, IAuthService authService, SaltimerDBContext context)
+    public CreateSessionHandler(IMapper mapper, IAuthService authService, SaltimerDBContext context)
             : base(mapper, authService, context) { }
 
     public async Task<MobTimerResponse> Handle(CreateSessionCommand request, CancellationToken cancellationToken)
@@ -16,12 +17,14 @@ public class CreateSessionHandler : BaseHandler, IRequestHandler<CreateSessionCo
         var currentUser = _authService.GetCurrentUser();
         var newMobTimer = _mapper.Map<MobTimerSession>(request);
         newMobTimer.Owner = currentUser;
-        newMobTimer = _context.MobTimerSession.Add(newMobTimer).Entity;
-        _context.SessionMember.Add(new SessionMember()
+        newMobTimer.Members = new List<SessionMember>() {new SessionMember()
         {
+            Turn = 20,
             User = currentUser,
             Session = newMobTimer
-        });
+        }};
+        newMobTimer = (await _context.MobTimerSession.AddAsync(newMobTimer)).Entity;
+
 
         await _context.SaveChangesAsync();
         var response = _mapper.Map<MobTimerResponse>(newMobTimer);
