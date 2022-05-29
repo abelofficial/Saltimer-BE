@@ -17,9 +17,9 @@ public abstract class BaseHandlerTest
 
     protected BaseHandlerTest(DbContextOptions<SaltimerDBContext> context)
     {
-        _mockAuthService = MockAuthService.GetAuthService();
         ContextOptions = context;
         Seed();
+        _mockAuthService = MockAuthService.GetAuthService();
 
         var mapperConfig = new MapperConfiguration(c =>
             {
@@ -41,26 +41,8 @@ public abstract class BaseHandlerTest
             context.Database.EnsureCreated();
 
             var data = new List<User>() {
-                new User() {
-                    Username =  "User 1",
-                    FirstName =  "User 1",
-                    LastName =  "User 1",
-                    EmailAddress =  "User 1",
-                    PasswordHash =  new byte[0],
-                    PasswordSalt =  new byte[0],
-                    MobTimers =  new List<MobTimerSession>(),
-
-                },
-                new User() {
-                    Username =  "User 2",
-                    FirstName =  "User 2",
-                    LastName =  "User 2",
-                    EmailAddress =  "User 2",
-                    PasswordHash =  new byte[0],
-                    PasswordSalt =  new byte[0],
-                    MobTimers =  new List<MobTimerSession>(),
-
-                }
+                MockUsers.GetAdminUser(),
+                MockUsers.GetUniqueUser(1)
             };
 
             context.AddRange(data);
