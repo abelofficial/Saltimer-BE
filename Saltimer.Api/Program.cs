@@ -1,16 +1,14 @@
-global using Saltimer.Api.Services;
-using System.Reflection;
 using System.Text;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Npgsql;
-using NSwag;
+using Saltimer.Api.Config;
 using Saltimer.Api.Hubs;
 using Saltimer.Api.Middleware;
 using Saltimer.Api.Models;
-using Swashbuckle.AspNetCore.Filters;
+using Saltimer.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 {
@@ -62,28 +60,29 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddSwaggerGen(options =>
-{
+// builder.Services.AddSwaggerGen(options =>
+// {
 
-    options.OperationFilter<SecurityRequirementsOperationFilter>();
-    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
-});
+//     options.OperationFilter<SecurityRequirementsOperationFilter>();
+//     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+//     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+// });
 
-builder.Services.AddSwaggerDocument(config =>
-{
-    config.Version = "v1";
-    config.Title = "Saltimer";
-    config.Description = "A RestAPI for Saltimer.";
-    config.AddSecurity("oauth2", new NSwag.OpenApiSecurityScheme
-    {
-        Description = "Standard Authorization header using the Bearer scheme (\"bearer {token}\")",
-        In = OpenApiSecurityApiKeyLocation.Header,
-        Name = "Authorization",
-        Type = OpenApiSecuritySchemeType.ApiKey
-    });
-});
+// builder.Services.AddSwaggerDocument(config =>
+// {
+//     config.Version = "v1";
+//     config.Title = "Saltimer";
+//     config.Description = "A RestAPI for Saltimer.";
+//     config.AddSecurity("oauth2", new NSwag.OpenApiSecurityScheme
+//     {
+//         Description = "Standard Authorization header using the Bearer scheme (\"bearer {token}\")",
+//         In = OpenApiSecurityApiKeyLocation.Header,
+//         Name = "Authorization",
+//         Type = OpenApiSecuritySchemeType.ApiKey
+//     });
+// });
 
+builder.Services.InstallServicesFromAssembly(builder.Configuration);
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
