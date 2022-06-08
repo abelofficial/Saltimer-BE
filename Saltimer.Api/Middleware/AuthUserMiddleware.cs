@@ -1,4 +1,6 @@
 
+using Saltimer.Api.Services;
+
 namespace Saltimer.Api.Middleware;
 public class AuthUserMiddleware
 {

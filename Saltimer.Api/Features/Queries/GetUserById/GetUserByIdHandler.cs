@@ -3,6 +3,7 @@ using AutoMapper;
 using MediatR;
 using Saltimer.Api.Dto;
 using Saltimer.Api.Queries;
+using Saltimer.Api.Services;
 
 namespace Saltimer.Api.Handlers;
 public class GetUserByIdHandler : BaseHandler, IRequestHandler<GetUserByIdQuery, UserResponseDto>

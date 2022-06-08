@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Saltimer.Api.Command;
 using Saltimer.Api.Dto;
+using Saltimer.Api.Services;
 
 namespace Saltimer.Api.Handlers;
 public class LoginUserHandler : BaseHandler, IRequestHandler<LoginUserCommand, LoginResponse>

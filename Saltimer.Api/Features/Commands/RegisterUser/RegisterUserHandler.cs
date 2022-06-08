@@ -4,6 +4,7 @@ using MediatR;
 using Saltimer.Api.Command;
 using Saltimer.Api.Dto;
 using Saltimer.Api.Models;
+using Saltimer.Api.Services;
 
 namespace Saltimer.Api.Handlers;
 public class RegisterUserHandler : BaseHandler, IRequestHandler<RegisterUserCommand, UserResponseDto>

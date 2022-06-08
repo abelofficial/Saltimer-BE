@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Saltimer.Api.Dto;
 using Saltimer.Api.Queries;
+using Saltimer.Api.Services;
 
 namespace Saltimer.Api.Handlers;
 public class GetSessionsHandler : BaseHandler, IRequestHandler<GetSessionsQuery, IEnumerable<MobTimerResponse>>
