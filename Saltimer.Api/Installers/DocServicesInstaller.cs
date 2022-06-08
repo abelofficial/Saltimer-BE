@@ -5,7 +5,7 @@ using Swashbuckle.AspNetCore.Filters;
 namespace Saltimer.Api.Config;
 
 
-public class DocsInstaller : IInstaller
+public class DocServicesInstaller : IInstaller
 {
     public void InstallServices(IServiceCollection services, IConfiguration config)
     {

@@ -1,9 +1,7 @@
 using System.Text;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Npgsql;
 using Saltimer.Api.Config;
 using Saltimer.Api.Hubs;
 using Saltimer.Api.Middleware;
@@ -11,34 +9,6 @@ using Saltimer.Api.Models;
 using Saltimer.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-{
-    var connectionString = string.Empty;
-    if (builder.Environment.EnvironmentName == "production")
-    {
-        var conStrBuilder = new NpgsqlConnectionStringBuilder();
-
-        conStrBuilder.Host = Environment.GetEnvironmentVariable("DbHost");
-        conStrBuilder.Database = Environment.GetEnvironmentVariable("DbName");
-        conStrBuilder.Username = Environment.GetEnvironmentVariable("DbUsername");
-        conStrBuilder.Password = Environment.GetEnvironmentVariable("DbPassword");
-        conStrBuilder.SslMode = SslMode.Require;
-        conStrBuilder.TrustServerCertificate = true;
-
-        connectionString = conStrBuilder.ConnectionString;
-        builder.Services.AddDbContext<SaltimerDBContext>(
-            options => options.UseNpgsql(connectionString)
-   );
-    }
-    else
-    {
-        connectionString = builder.Configuration.GetConnectionString("SaltimerDBContext");
-        builder.Services.AddDbContext<SaltimerDBContext>(options =>
-             options.UseSqlServer(connectionString ?? throw new InvalidOperationException("Connection string 'UserContext' not found.")));
-    }
-
-
-}
-
 
 builder.Services.AddCors(options =>
 {
@@ -60,30 +30,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddHttpContextAccessor();
 
-// builder.Services.AddSwaggerGen(options =>
-// {
-
-//     options.OperationFilter<SecurityRequirementsOperationFilter>();
-//     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-//     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
-// });
-
-// builder.Services.AddSwaggerDocument(config =>
-// {
-//     config.Version = "v1";
-//     config.Title = "Saltimer";
-//     config.Description = "A RestAPI for Saltimer.";
-//     config.AddSecurity("oauth2", new NSwag.OpenApiSecurityScheme
-//     {
-//         Description = "Standard Authorization header using the Bearer scheme (\"bearer {token}\")",
-//         In = OpenApiSecurityApiKeyLocation.Header,
-//         Name = "Authorization",
-//         Type = OpenApiSecuritySchemeType.ApiKey
-//     });
-// });
-
-builder.Services.InstallServicesFromAssembly(builder.Configuration);
-
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -102,6 +48,8 @@ builder.Services.AddSingleton<IDictionary<string, SessionHubUsers>>(
 builder.Services.AddSingleton<IDictionary<string, SessionHub>>(
     opts => new Dictionary<string, SessionHub>());
 
+
+builder.Services.InstallServicesFromAssembly(builder.Configuration);
 
 var app = builder.Build();
 
