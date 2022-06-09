@@ -5,15 +5,15 @@ defaults:
     working-directory: ./
 
 on:
-  push:
-    branches:
-      - development
+  pull_request:
+    branches: [main]
     paths:
       - "**.cs"
       - "**.csproj"
 
 jobs:
   build:
+    if: github.event.pull_request.merged == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

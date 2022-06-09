@@ -5,13 +5,8 @@ defaults:
     working-directory: ./
 
 on:
-  push:
-    branches: [main, development]
-    paths:
-      - "**.cs"
-      - "**.csproj"
   pull_request:
-    branches: [main, development]
+    branches: [main]
     paths:
       - "**.cs"
       - "**.csproj"
