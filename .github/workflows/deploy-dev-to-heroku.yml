@@ -1,0 +1,42 @@
+name: deploy dev to Heroku
+
+defaults:
+  run:
+    working-directory: ./
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "**.cs"
+      - "**.csproj"
+
+jobs:
+  build:
+    if: github.event.pull_request.merged == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
+          heroku_email: ${{secrets.HEROKU_EMAIL}}
+          justlogin: true
+
+      - name: Update environment variables on Heroku
+        run: heroku config:set DbHost=${{ secrets.DbHost }} DbName=${{ secrets.DbName }} DbUsername=${{ secrets.DbUsername }} DbPassword=${{ secrets.DbPassword }} --app ${{secrets.HEROKU_APP_NAME}}
+        env:
+          DbHost: ${{secrets.DbHost}}
+          DbName: ${{secrets.DbName}}
+          DbUsername: ${{secrets.DbUsername}}
+          DbPassword: ${{secrets.DbPassword}}
+
+      - name: "Login to heroku registry"
+        run: heroku container:login
+
+      - name: "Build and push to heroku registry"
+        run: heroku container:push web --app ${{secrets.HEROKU_APP_NAME}}
+
+      - name: "Releases the container"
+        run: heroku container:release web --app ${{secrets.HEROKU_APP_NAME}}

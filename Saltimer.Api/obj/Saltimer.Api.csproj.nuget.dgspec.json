@@ -1,25 +1,27 @@
 {
   "format": 1,
   "restore": {
-    "/Users/salt-dev/Snehal/FinalProject/Saltimer-BE/Saltimer.Api/Saltimer.Api/Saltimer.Api.csproj": {}
+    "D:\\Development\\Backend\\DotNet\\Saltimer-BE\\Saltimer.Api\\Saltimer.Api.csproj": {}
   },
   "projects": {
-    "/Users/salt-dev/Snehal/FinalProject/Saltimer-BE/Saltimer.Api/Saltimer.Api/Saltimer.Api.csproj": {
+    "D:\\Development\\Backend\\DotNet\\Saltimer-BE\\Saltimer.Api\\Saltimer.Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/salt-dev/Snehal/FinalProject/Saltimer-BE/Saltimer.Api/Saltimer.Api/Saltimer.Api.csproj",
+        "projectUniqueName": "D:\\Development\\Backend\\DotNet\\Saltimer-BE\\Saltimer.Api\\Saltimer.Api.csproj",
         "projectName": "Saltimer.Api",
-        "projectPath": "/Users/salt-dev/Snehal/FinalProject/Saltimer-BE/Saltimer.Api/Saltimer.Api/Saltimer.Api.csproj",
-        "packagesPath": "/Users/salt-dev/.nuget/packages/",
-        "outputPath": "/Users/salt-dev/Snehal/FinalProject/Saltimer-BE/Saltimer.Api/Saltimer.Api/obj/",
+        "projectPath": "D:\\Development\\Backend\\DotNet\\Saltimer-BE\\Saltimer.Api\\Saltimer.Api.csproj",
+        "packagesPath": "C:\\Users\\Abel Sintaro\\.nuget\\packages\\",
+        "outputPath": "D:\\Development\\Backend\\DotNet\\Saltimer-BE\\Saltimer.Api\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/salt-dev/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Abel Sintaro\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -38,9 +40,85 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
+            "AutoMapper": {
+              "target": "Package",
+              "version": "[10.1.1, )"
+            },
+            "AutoMapper.Extensions.Microsoft.DependencyInjection": {
+              "target": "Package",
+              "version": "[8.1.1, )"
+            },
+            "MediatR": {
+              "target": "Package",
+              "version": "[10.0.1, )"
+            },
+            "MediatR.Extensions.Microsoft.DependencyInjection": {
+              "target": "Package",
+              "version": "[10.0.1, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[6.0.3, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[6.0.3, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[6.0.3, )"
+            },
+            "Microsoft.EntityFrameworkCore.Sqlite": {
+              "target": "Package",
+              "version": "[6.0.3, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[6.0.3, )"
+            },
+            "Microsoft.IdentityModel.Tokens": {
+              "target": "Package",
+              "version": "[6.16.0, )"
+            },
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[6.0.2, )"
+            },
+            "NSwag.AspNetCore": {
+              "target": "Package",
+              "version": "[13.16.0, )"
+            },
+            "Npgsql": {
+              "target": "Package",
+              "version": "[6.0.3, )"
+            },
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[6.0.3, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.2.3, )"
+            },
+            "Swashbuckle.AspNetCore.Filters": {
+              "target": "Package",
+              "version": "[7.0.2, )"
+            },
+            "Swashbuckle.AspNetCore.Redoc": {
+              "target": "Package",
+              "version": "[6.3.1, )"
+            },
+            "Swashbuckle.AspNetCore.Swagger": {
+              "target": "Package",
+              "version": "[6.3.1, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[6.16.0, )"
             }
           },
           "imports": [
@@ -61,7 +139,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/6.0.101/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.300\\RuntimeIdentifierGraph.json"
         }
       }
     }

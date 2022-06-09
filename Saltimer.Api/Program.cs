@@ -1,25 +1,35 @@
+using Saltimer.Api.Config;
+using Saltimer.Api.Hubs;
+using Saltimer.Api.Middleware;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.InstallServicesFromAssembly(builder.Configuration);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+app.UseOpenApi();
+app.UseSwaggerUi3();
+app.UseReDoc(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    c.DocumentTitle = "Saltimer API";
+    c.SpecUrl = "/swagger/v1/swagger.json";
+});
 
+app.UseRouting();
+
+app.UseCors();
+app.UseMiddleware<ErrorHandlerMiddleware>();
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
+app.UseMiddleware<AuthUserMiddleware>();
+
 app.MapControllers();
+app.MapHub<MobTimerHub>("/timer");
+
 
 app.Run();
