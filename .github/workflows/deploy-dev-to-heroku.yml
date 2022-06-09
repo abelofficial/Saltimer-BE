@@ -6,6 +6,7 @@ defaults:
 
 on:
   pull_request:
+    types: [closed]
     branches: [main]
     paths:
       - "**.cs"
