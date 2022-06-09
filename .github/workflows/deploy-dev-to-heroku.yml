@@ -1,26 +1,30 @@
 name: deploy dev to Heroku
-
 defaults:
   run:
     working-directory: ./
-
 on:
   pull_request:
     types: [closed]
     branches: [main]
     paths:
       - "Saltimer.Api/**"
-
 jobs:
-  deploy:
-    
-    if: github.event.pull_request.merged == 'false'
-    name: Unmerged
-    run: echo "Deployment was skipped because PR closed without merge."
+  merge-status-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Unmerged
+        run: echo "Deployment was skipped because PR closed without merge."
+        if: github.event.pull_request.merged == 'false'
 
+      - name: Merged
+        run: echo "Deployment has started."
+        if: github.event.pull_request.merged == 'true'
+
+  deploy:
+    name: deploy-to-heroku
     if: github.event.pull_request.merged == 'true'
     runs-on: ubuntu-latest
-    steps:  
+    steps:
       - uses: actions/checkout@v2
       - uses: akhileshns/heroku-deploy@v3.12.12
         with:
@@ -36,12 +40,9 @@ jobs:
           DbName: ${{secrets.DbName}}
           DbUsername: ${{secrets.DbUsername}}
           DbPassword: ${{secrets.DbPassword}}
-
       - name: "Login to heroku registry"
         run: heroku container:login
-
       - name: "Build and push to heroku registry"
         run: heroku container:push web --app ${{secrets.HEROKU_APP_NAME}}
-
       - name: "Releases the container"
         run: heroku container:release web --app ${{secrets.HEROKU_APP_NAME}}

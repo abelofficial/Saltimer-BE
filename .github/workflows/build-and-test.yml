@@ -6,10 +6,13 @@ defaults:
 
 on:
   pull_request:
+    types:
+      - opened
     branches: [main]
     paths:
       - "Saltimer.Api/**"
       - "Saltimer.Test/**"
+      - ".github/workflows/**"
 
 env:
   DOTNET_VERSION: "6.0.x" # The .NET SDK version to use
